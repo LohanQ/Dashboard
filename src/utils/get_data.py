@@ -1,17 +1,37 @@
-# src/utils/get_data.py
-
-import pandas as pd
 import os
+import pandas as pd
+import numpy as np
 
-def get_local_data(file_name: str) -> pd.DataFrame:
+
+def get_local_data(file_name: str, chunksize: int = None) -> pd.DataFrame:
     """
-    Charge un fichier CSV brut depuis le répertoire `data/raw`.
+    Charge un fichier CSV depuis le répertoire spécifié avec possibilité de gestion par morceaux (chunks).
 
     :param file_name: Nom du fichier à charger (ex: 'rawdata.csv').
-    :return: DataFrame pandas contenant les données chargées.
+    :param chunksize: Taille des morceaux à charger (None pour charger tout le fichier d'un coup).
+    :return: DataFrame pandas contenant les données chargées ou un DataFrame combiné si chunksize est utilisé.
     """
-    raw_data_path = os.path.join("data", "raw", file_name)
-    
-    # Lire le fichier CSV
-    data = pd.read_csv(raw_data_path)
+    raw_data_path = os.path.join(r"C:\\Users\\lohan\\Downloads", file_name)
+
+    try:
+        if chunksize:
+            # Lire le fichier par morceaux
+            chunks = pd.read_csv(raw_data_path, on_bad_lines='skip', sep=";", chunksize=chunksize)
+            data = pd.concat(chunks, ignore_index=True)  # Combiner tous les chunks en un seul DataFrame
+        else:
+            # Lire le fichier complet
+            data = pd.read_csv(raw_data_path, on_bad_lines='skip', sep=";")
+    except pd.errors.ParserError as e:
+        print(f"Erreur lors de la lecture du fichier CSV: {e}")
+        raise
+    except FileNotFoundError as e:
+        print(f"Fichier introuvable: {e}")
+        raise
+    except Exception as e:
+        print(f"Erreur inconnue lors de la lecture du fichier: {e}")
+        raise
+
     return data
+
+
+
