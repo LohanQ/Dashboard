@@ -73,6 +73,8 @@ def prepare_metrics(data: pd.DataFrame) -> dict:
     # Distribution des âges
     distribution_ages = data['Age'].tolist()  # Conversion en liste
 
+
+
     return {
         "age_moyen_par_an": age_moyen_par_an,
         "age_moyen_par_departement": age_moyen_par_departement,

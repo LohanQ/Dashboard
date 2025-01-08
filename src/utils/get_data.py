@@ -12,6 +12,7 @@ def get_local_data(file_name: str, chunksize: int = None) -> pd.DataFrame:
     :return: DataFrame pandas contenant les données chargées ou un DataFrame combiné si chunksize est utilisé.
     """
     raw_data_path = os.path.join(r"C:\\Users\\lohan\\Downloads", file_name)
+    #url = 'https://public.opendatasoft.com/explore/dataset/liste-des-personnes-decedees-en-france/download/?format=csv&timezone=Europe/Berlin&lang=fr'
 
     try:
         if chunksize:

@@ -7,15 +7,19 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:main.py||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lohan\\source\\repos\\Dashboard\\src\\utils\\clean_data.py||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\utils\\clean_data.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lohan\\Downloads\\departements.geojson||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lohan\\source\\repos\\Dashboard\\src\\utils\\get_data.py||{8B382828-6202-11D1-8870-0000F87579D2}|",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\utils\\get_data.py||{8B382828-6202-11D1-8870-0000F87579D2}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lohan\\Downloads\\departements.geojson||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lohan\\source\\repos\\Dashboard\\src\\utils\\clean_data.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\utils\\clean_data.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lohan\\source\\repos\\Dashboard\\README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lohan\\source\\repos\\Dashboard\\src\\utils\\__init__.py||{8B382828-6202-11D1-8870-0000F87579D2}",
@@ -24,10 +28,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lohan\\source\\repos\\Dashboard\\.gitattributes||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:.gitattributes||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lohan\\source\\repos\\Dashboard\\README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:README.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\lohan\\source\\repos\\Dashboard\\config.py||{3B902123-F8A7-4915-9F01-361F908088D0}",
@@ -45,13 +45,13 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "clean_data.py",
               "DocumentMoniker": "C:\\Users\\lohan\\source\\repos\\Dashboard\\src\\utils\\clean_data.py",
               "RelativeDocumentMoniker": "src\\utils\\clean_data.py",
               "ToolTip": "C:\\Users\\lohan\\source\\repos\\Dashboard\\src\\utils\\clean_data.py",
               "RelativeToolTip": "src\\utils\\clean_data.py",
-              "ViewState": "AgIAAA0AAAAAAAAAAAAAABcAAABRAAAAAAAAAA==",
+              "ViewState": "AgIAADIAAAAAAAAAAAAgwEIAAABFAAAAAAAAAA==",
               "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAKfSURBVDhPpZNPSBRRHMc/783O2p9t/0CHrUOBpyWEDDcS2hAPkp40JAr01qlDSCB49BToSeziwYMnT56WPagnDw1oYChhUXSow5QLBft2WXCb3Tevw6zjriYlfuHH\u002B73v/N5n3pv3G8Ep6tl2cqlIeTElK5mkpUhZZVKyTNIqN3N1lFsKm3oxeXU/LY\u002BDADq3P\u002BQQctUYmTEACIwRGI7CR2KQ\u002BEaijQWQVj\u002Bv7Z0AprZ\u002B5IwWq74RscOF2shgJFjcMBYNLOomgodNzXSgsUASE220Wz0L9s3OZ1FL21HhERUeHaJOkAejLepBTpDfvXeJsbHLXJIHXBC/vx3BnEqO7vsNwJwlBh9fN2\u002B/58z7/az5tH/7a3Bkp5IDaxUhLYCpqSmWlpaYm5sjm80CMDw8zMLCAtPT08RisXAfdSJU/CuUdRzlJ5AhDBNWDQ4Osra2Rj6fp1AoMDo6yuTkJMvLy9RqNQqFwhHQ2FT0FZQfp6QTSJArrbBDdXd309fXh\u002Bu6jIyMMDMzg\u002BM4zM7O0t/fH9Z5xqbsx1E6gfLjSCDdRmrR7u4uAwMDuK5LJpMBIJlMMjExEdbUjY1qAks6yYm2OdT6\u002Bjr5fB6lFPPz84yPj7OyssLm5ibVajWs84zd/H4BVOBUg94FeDEEO29Ip9MopajVauEjgK6uLlzXRSkVeplHvTx89YSIaCDxv/11h8Vi8QQMYG9vrw0G4Pk2yk9Q0onmLZ9Tnomimi1T0olf5wdiU/ITKJ2oKj/5MnK8AGBjY\u002BO41dYqrfL8KErHqzZm6F221wGnasK48\u002BDEr/WvuDj0yLux9Tl3\u002BIL2W349BV/eh9N/SRithXew6H/ceR56bcAzSVRBD5GLO62uBBqtxv/p7zAAiTBPzwgtngYD\u002BAO\u002BQFBre6C3ywAAAABJRU5ErkJggg==",
               "WhenOpened": "2024-12-31T10:16:15.868Z",
               "IsPinned": true,
@@ -75,7 +75,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "departements.geojson",
               "DocumentMoniker": "C:\\Users\\lohan\\Downloads\\departements.geojson",
               "RelativeDocumentMoniker": "..\\..\\..\\Downloads\\departements.geojson",
@@ -94,7 +94,7 @@
               "RelativeDocumentMoniker": "src\\utils\\get_data.py",
               "ToolTip": "C:\\Users\\lohan\\source\\repos\\Dashboard\\src\\utils\\get_data.py",
               "RelativeToolTip": "src\\utils\\get_data.py",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAAB0AAAANAAAAAAAAAA==",
               "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAKfSURBVDhPpZNPSBRRHMc/783O2p9t/0CHrUOBpyWEDDcS2hAPkp40JAr01qlDSCB49BToSeziwYMnT56WPagnDw1oYChhUXSow5QLBft2WXCb3Tevw6zjriYlfuHH\u002B73v/N5n3pv3G8Ep6tl2cqlIeTElK5mkpUhZZVKyTNIqN3N1lFsKm3oxeXU/LY\u002BDADq3P\u002BQQctUYmTEACIwRGI7CR2KQ\u002BEaijQWQVj\u002Bv7Z0AprZ\u002B5IwWq74RscOF2shgJFjcMBYNLOomgodNzXSgsUASE220Wz0L9s3OZ1FL21HhERUeHaJOkAejLepBTpDfvXeJsbHLXJIHXBC/vx3BnEqO7vsNwJwlBh9fN2\u002B/58z7/az5tH/7a3Bkp5IDaxUhLYCpqSmWlpaYm5sjm80CMDw8zMLCAtPT08RisXAfdSJU/CuUdRzlJ5AhDBNWDQ4Osra2Rj6fp1AoMDo6yuTkJMvLy9RqNQqFwhHQ2FT0FZQfp6QTSJArrbBDdXd309fXh\u002Bu6jIyMMDMzg\u002BM4zM7O0t/fH9Z5xqbsx1E6gfLjSCDdRmrR7u4uAwMDuK5LJpMBIJlMMjExEdbUjY1qAks6yYm2OdT6\u002Bjr5fB6lFPPz84yPj7OyssLm5ibVajWs84zd/H4BVOBUg94FeDEEO29Ip9MopajVauEjgK6uLlzXRSkVeplHvTx89YSIaCDxv/11h8Vi8QQMYG9vrw0G4Pk2yk9Q0onmLZ9Tnomimi1T0olf5wdiU/ITKJ2oKj/5MnK8AGBjY\u002BO41dYqrfL8KErHqzZm6F221wGnasK48\u002BDEr/WvuDj0yLux9Tl3\u002BIL2W349BV/eh9N/SRithXew6H/ceR56bcAzSVRBD5GLO62uBBqtxv/p7zAAiTBPzwgtngYD\u002BAO\u002BQFBre6C3ywAAAABJRU5ErkJggg==",
               "WhenOpened": "2024-12-30T13:00:10.98Z",
               "EditorCaption": ""
@@ -107,14 +107,14 @@
               "RelativeDocumentMoniker": "main.py",
               "ToolTip": "C:\\Users\\lohan\\source\\repos\\Dashboard\\main.py",
               "RelativeToolTip": "main.py",
-              "ViewState": "AgIAAKkAAAAAAAAAAAAAAL0AAAArAAAAAAAAAA==",
+              "ViewState": "AgIAALkAAAAAAAAAAAAAAKMAAAAeAAAAAAAAAA==",
               "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAKfSURBVDhPpZNPSBRRHMc/783O2p9t/0CHrUOBpyWEDDcS2hAPkp40JAr01qlDSCB49BToSeziwYMnT56WPagnDw1oYChhUXSow5QLBft2WXCb3Tevw6zjriYlfuHH\u002B73v/N5n3pv3G8Ep6tl2cqlIeTElK5mkpUhZZVKyTNIqN3N1lFsKm3oxeXU/LY\u002BDADq3P\u002BQQctUYmTEACIwRGI7CR2KQ\u002BEaijQWQVj\u002Bv7Z0AprZ\u002B5IwWq74RscOF2shgJFjcMBYNLOomgodNzXSgsUASE220Wz0L9s3OZ1FL21HhERUeHaJOkAejLepBTpDfvXeJsbHLXJIHXBC/vx3BnEqO7vsNwJwlBh9fN2\u002B/58z7/az5tH/7a3Bkp5IDaxUhLYCpqSmWlpaYm5sjm80CMDw8zMLCAtPT08RisXAfdSJU/CuUdRzlJ5AhDBNWDQ4Osra2Rj6fp1AoMDo6yuTkJMvLy9RqNQqFwhHQ2FT0FZQfp6QTSJArrbBDdXd309fXh\u002Bu6jIyMMDMzg\u002BM4zM7O0t/fH9Z5xqbsx1E6gfLjSCDdRmrR7u4uAwMDuK5LJpMBIJlMMjExEdbUjY1qAks6yYm2OdT6\u002Bjr5fB6lFPPz84yPj7OyssLm5ibVajWs84zd/H4BVOBUg94FeDEEO29Ip9MopajVauEjgK6uLlzXRSkVeplHvTx89YSIaCDxv/11h8Vi8QQMYG9vrw0G4Pk2yk9Q0onmLZ9Tnomimi1T0olf5wdiU/ITKJ2oKj/5MnK8AGBjY\u002BO41dYqrfL8KErHqzZm6F221wGnasK48\u002BDEr/WvuDj0yLux9Tl3\u002BIL2W349BV/eh9N/SRithXew6H/ceR56bcAzSVRBD5GLO62uBBqtxv/p7zAAiTBPzwgtngYD\u002BAO\u002BQFBre6C3ywAAAABJRU5ErkJggg==",
               "WhenOpened": "2024-12-30T12:48:53.523Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "__init__.py",
               "DocumentMoniker": "C:\\Users\\lohan\\source\\repos\\Dashboard\\src\\utils\\__init__.py",
               "RelativeDocumentMoniker": "src\\utils\\__init__.py",
@@ -122,8 +122,7 @@
               "RelativeToolTip": "src\\utils\\__init__.py",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAKfSURBVDhPpZNPSBRRHMc/783O2p9t/0CHrUOBpyWEDDcS2hAPkp40JAr01qlDSCB49BToSeziwYMnT56WPagnDw1oYChhUXSow5QLBft2WXCb3Tevw6zjriYlfuHH\u002B73v/N5n3pv3G8Ep6tl2cqlIeTElK5mkpUhZZVKyTNIqN3N1lFsKm3oxeXU/LY\u002BDADq3P\u002BQQctUYmTEACIwRGI7CR2KQ\u002BEaijQWQVj\u002Bv7Z0AprZ\u002B5IwWq74RscOF2shgJFjcMBYNLOomgodNzXSgsUASE220Wz0L9s3OZ1FL21HhERUeHaJOkAejLepBTpDfvXeJsbHLXJIHXBC/vx3BnEqO7vsNwJwlBh9fN2\u002B/58z7/az5tH/7a3Bkp5IDaxUhLYCpqSmWlpaYm5sjm80CMDw8zMLCAtPT08RisXAfdSJU/CuUdRzlJ5AhDBNWDQ4Osra2Rj6fp1AoMDo6yuTkJMvLy9RqNQqFwhHQ2FT0FZQfp6QTSJArrbBDdXd309fXh\u002Bu6jIyMMDMzg\u002BM4zM7O0t/fH9Z5xqbsx1E6gfLjSCDdRmrR7u4uAwMDuK5LJpMBIJlMMjExEdbUjY1qAks6yYm2OdT6\u002Bjr5fB6lFPPz84yPj7OyssLm5ibVajWs84zd/H4BVOBUg94FeDEEO29Ip9MopajVauEjgK6uLlzXRSkVeplHvTx89YSIaCDxv/11h8Vi8QQMYG9vrw0G4Pk2yk9Q0onmLZ9Tnomimi1T0olf5wdiU/ITKJ2oKj/5MnK8AGBjY\u002BO41dYqrfL8KErHqzZm6F221wGnasK48\u002BDEr/WvuDj0yLux9Tl3\u002BIL2W349BV/eh9N/SRithXew6H/ceR56bcAzSVRBD5GLO62uBBqtxv/p7zAAiTBPzwgtngYD\u002BAO\u002BQFBre6C3ywAAAABJRU5ErkJggg==",
-              "WhenOpened": "2024-12-30T18:08:20.421Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-30T18:08:20.421Z"
             },
             {
               "$type": "Document",
@@ -138,7 +137,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 4,
               "Title": "README.md",
               "DocumentMoniker": "C:\\Users\\lohan\\source\\repos\\Dashboard\\README.md",
               "RelativeDocumentMoniker": "README.md",
@@ -146,12 +145,11 @@
               "RelativeToolTip": "README.md",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2024-12-30T11:41:22.582Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-30T11:41:22.582Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": ".gitattributes",
               "DocumentMoniker": "C:\\Users\\lohan\\source\\repos\\Dashboard\\.gitattributes",
               "RelativeDocumentMoniker": ".gitattributes",
@@ -159,8 +157,7 @@
               "RelativeToolTip": ".gitattributes",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-12-30T11:41:21.442Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-30T11:41:21.442Z"
             }
           ]
         }

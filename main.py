@@ -3,10 +3,9 @@ from src.utils.clean_data import clean_data, save_cleaned_data, prepare_metrics
 
 import pandas as pd
 import plotly.express as px
-import dash
-from dash.dependencies import Input, Output
 import json
 from dash import dcc, html, Input, Output, State
+import dash
 
 
 def create_dashboard(data: pd.DataFrame, metrics):
@@ -41,7 +40,9 @@ def create_dashboard(data: pd.DataFrame, metrics):
                     html.Button("Répartition par sexe", id="btn-sexe", n_clicks=0, style={"margin": "10px"}),
                     html.Button("Évolution par région", id="btn-region", n_clicks=0, style={"margin": "10px"}),
                     html.Button("Distribution des âges", id="btn-distribution", n_clicks=0, style={"margin": "10px"}),
-                    html.Button("Treemap par région", id="btn-treemap", n_clicks=0, style={"margin": "10px"})
+                    html.Button("Treemap par région", id="btn-treemap", n_clicks=0, style={"margin": "10px"}),
+                    html.Button("Top 10 communes", id="btn-top-communes", n_clicks=0, style={"margin": "10px"})
+
                 ]
             ),
 
@@ -58,6 +59,8 @@ def create_dashboard(data: pd.DataFrame, metrics):
 
     # Callback pour basculer entre les visualisations
     @app.callback(
+
+
         Output("content", "children"),
         [Input("btn-courbe", "n_clicks"),
          Input("btn-carte", "n_clicks"),
@@ -134,36 +137,65 @@ def create_dashboard(data: pd.DataFrame, metrics):
                 )
             )
         elif button_id == "btn-treemap":
-            # Treemap avec slider
-            slider = dcc.Slider(
-                id="year-slider",
-                min=min([item['Année Décès'] for item in metrics["deces_par_region_annee"]]),
-                max=max([item['Année Décès'] for item in metrics["deces_par_region_annee"]]),
-                value=min([item['Année Décès'] for item in metrics["deces_par_region_annee"]]),
-                marks={str(year): str(year) for year in sorted(set(item['Année Décès'] for item in metrics["deces_par_region_annee"]))},
-                step=None
+            dropdown = dcc.Dropdown(
+                id="year-dropdown",  # ID modifié pour correspondre au callback
+                options=[{'label': str(year), 'value': year}
+                        for year in sorted(set(item['Année Décès'] for item in metrics["deces_par_region_annee"]))
+                        ],
+                value=min([item['Année Décès'] for item in metrics["deces_par_region_annee"]]),  # Valeur par défaut
+                placeholder="Sélectionnez une année",
+                style={"width": "50%", "margin": "0 auto"}
             )
             return html.Div([
-                slider,
-                dcc.Graph(id='treemap-dynamic')
-            ])
+                    dropdown,
+                    dcc.Graph(id='treemap-dynamic')
+    ])
+
+
+        elif button_id == "btn-top-10-communes":
+            top_10_communes = sorted(
+                metrics["deces_par_commune"],  # Assurez-vous que cette clé existe
+                key=lambda x: x["Count"],
+                reverse=True
+            )[:10]  # Prenez les 10 premières communes
+    
+            return dcc.Graph(
+                id='graph-top-10-communes',
+                figure=px.bar(
+                    top_10_communes,
+                    x='Commune',
+                    y='Count',
+                    title="Top 10 des communes avec le plus de décès",
+                    labels={"Commune": "Commune", "Count": "Nombre de décès"}
+                ).update_layout(template="plotly_white")
+    )
+
 
     # Callback pour mettre à jour le treemap en fonction du slider
     @app.callback(
+
         Output("treemap-dynamic", "figure"),
-        [Input("year-slider", "value")],
+        [Input("year-dropdown", "value")],
         State("metrics-store", "data")
     )
     def update_treemap(selected_year, metrics):
-        filtered_data = [item for item in metrics["deces_par_region_annee"] if item['Année Décès'] == selected_year]
-        return px.treemap(
-            filtered_data,
-            path=[px.Constant('France'), 'Nom Actuel Région Décès'],
-            values='Count',
-            color='Count',
-            color_continuous_scale="Viridis",
-            title=f"Répartition des décès par région en {selected_year}"
-        ).update_layout(template="plotly_white")
+      
+    # Filtrer les données pour l'année sélectionnée
+      if selected_year is None:  # Si aucune année n'est sélectionnée
+        return px.treemap(title="Veuillez sélectionner une année")
+    
+    # Filtrer les données pour l'année sélectionnée
+      filtered_data = [item for item in metrics["deces_par_region_annee"] if item['Année Décès'] == selected_year]
+    
+    # Générer le graphique Treemap
+      return px.treemap(
+        filtered_data,
+        path=[px.Constant('France'), 'Nom Actuel Région Décès'],  # Chemin hiérarchique
+        values='Count',
+        color='Count',
+        color_continuous_scale="Viridis",
+        title=f"Répartition des décès par région en {selected_year}"
+    ).update_layout(template="plotly_white")
 
     # Lancer le tableau de bord
     app.run_server(debug=False)
