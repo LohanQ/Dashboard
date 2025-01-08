@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 
-def get_local_data(file_name: str, chunksize: int = None) -> pd.DataFrame:
+def get_local_data(file_name: str) -> pd.DataFrame:
     """
     Charge un fichier CSV depuis le répertoire spécifié avec possibilité de gestion par morceaux (chunks).
 
@@ -15,11 +15,6 @@ def get_local_data(file_name: str, chunksize: int = None) -> pd.DataFrame:
     #url = 'https://public.opendatasoft.com/explore/dataset/liste-des-personnes-decedees-en-france/download/?format=csv&timezone=Europe/Berlin&lang=fr'
 
     try:
-        if chunksize:
-            # Lire le fichier par morceaux
-            chunks = pd.read_csv(raw_data_path, on_bad_lines='skip', sep=";", chunksize=chunksize)
-            data = pd.concat(chunks, ignore_index=True)  # Combiner tous les chunks en un seul DataFrame
-        else:
             # Lire le fichier complet
             data = pd.read_csv(raw_data_path, on_bad_lines='skip', sep=";")
     except pd.errors.ParserError as e:

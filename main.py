@@ -7,12 +7,11 @@ import json
 from dash import dcc, html, Input, Output, State
 import dash
 
-
 def create_dashboard(data: pd.DataFrame, metrics):
     """
     Crée un tableau de bord interactif avec Dash avec des optimisations pour le changement de graphes.
     """
-    # Charger le GeoJSON simplifié
+    # Charger le GeoJSON des départements
     with open('departements.geojson', 'r', encoding='utf-8') as f:
         geojson_data = json.load(f)
 
@@ -21,13 +20,13 @@ def create_dashboard(data: pd.DataFrame, metrics):
 
     # Mémorisation des métriques
     app.layout = html.Div(
-        style={"backgroundColor": "#f7f7f7", "fontFamily": "Arial, sans-serif", "padding": "10px"},
+        style={"backgroundColor": "#f7f7f7", "fontFamily": "Arial, sans-serif", "padding": "10px", "height": "100vh", "margin": "0"},
         children=[
             html.Header(
                 style={"textAlign": "center", "padding": "20px", "backgroundColor": "#0044cc", "color": "white"},
                 children=[
-                    html.H1("Tableau de bord des décès en France"),
-                    html.P("Explorez les tendances et les données liées aux décès en France.")
+                    html.H1("Tableau de bord des restaurants en France"),
+                    html.P("Explorez les tendances et les données liées aux restaurants en France.")
                 ]
             ),
 
@@ -35,20 +34,16 @@ def create_dashboard(data: pd.DataFrame, metrics):
             html.Div(
                 style={"display": "flex", "justifyContent": "center", "margin": "20px 0"},
                 children=[
-                    html.Button("Courbe d'âge moyen par année", id="btn-courbe", n_clicks=0, style={"margin": "10px"}),
-                    html.Button("Carte interactive des départements", id="btn-carte", n_clicks=0, style={"margin": "10px"}),
-                    html.Button("Répartition par sexe", id="btn-sexe", n_clicks=0, style={"margin": "10px"}),
-                    html.Button("Évolution par région", id="btn-region", n_clicks=0, style={"margin": "10px"}),
-                    html.Button("Distribution des âges", id="btn-distribution", n_clicks=0, style={"margin": "10px"}),
-                    html.Button("Treemap par région", id="btn-treemap", n_clicks=0, style={"margin": "10px"}),
-                    html.Button("Top 10 communes", id="btn-top-communes", n_clicks=0, style={"margin": "10px"})
-
+                    html.Button("Répartition par type de restaurant", id="btn-type", n_clicks=0, style={"margin": "10px"}),
+                    html.Button("Carte des restaurants", id="btn-carte", n_clicks=0, style={"margin": "10px"}),
+                    html.Button("Répartition par région", id="btn-region", n_clicks=0, style={"margin": "10px"}),
+                    html.Button("Répartition par commune", id="btn-commune", n_clicks=0, style={"margin": "10px"})
                 ]
             ),
 
             # Contenu dynamique des graphes
-            dcc.Store(id="metrics-store", data=metrics),  # Stocker les métriques sérialisées
-            html.Div(id="content", style={"padding": "20px"}),
+            dcc.Store(id="metrics-store", data=metrics),  
+            html.Div(id="content", style={"padding": "20px", "flex": 1}),
 
             html.Footer(
                 style={"textAlign": "center", "marginTop": "20px", "padding": "10px", "backgroundColor": "#333", "color": "white"},
@@ -59,166 +54,102 @@ def create_dashboard(data: pd.DataFrame, metrics):
 
     # Callback pour basculer entre les visualisations
     @app.callback(
-
-
         Output("content", "children"),
-        [Input("btn-courbe", "n_clicks"),
+        [Input("btn-type", "n_clicks"),
          Input("btn-carte", "n_clicks"),
-         Input("btn-sexe", "n_clicks"),
          Input("btn-region", "n_clicks"),
-         Input("btn-distribution", "n_clicks"),
-         Input("btn-treemap", "n_clicks")],
-        State("metrics-store", "data")  # Récupérer les métriques sérialisées
+         Input("btn-commune", "n_clicks")],
+        State("metrics-store", "data") 
     )
-    def display_content(btn_courbe, btn_carte, btn_sexe, btn_region, btn_distribution, btn_treemap, metrics):
-        ctx = dash.callback_context  # Identifier le bouton cliqué
+    def display_content(btn_type, btn_carte, btn_region, btn_commune, metrics):
+        ctx = dash.callback_context  # Identifie le bouton cliqué
         if not ctx.triggered:
             return html.Div("Sélectionnez un graphique à afficher.")
 
         # Identifier le bouton cliqué
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
-        if button_id == "btn-courbe":
+        if button_id == "btn-type":
             return dcc.Graph(
-                id='graph-age-par-annee',
-                figure=px.line(
-                    metrics["age_moyen_par_an"],
-                    x='Année Décès',
-                    y='Age',
-                    title="Âge moyen de décès par année",
-                    labels={"Age": "Âge moyen", "Année Décès": "Année"}
-                ).update_layout(template="plotly_white")
+                id='graph-repartition-type',
+                figure=px.pie(
+                    metrics["restaurants_par_type"],
+                    names='Type',
+                    values='Count',
+                    title="Répartition des restaurants par type"
+                )
             )
         elif button_id == "btn-carte":
             return dcc.Graph(
-                id='map-age-par-departement',
+                id='map-restaurant-par-departement',
                 figure=px.choropleth(
-                    metrics["age_moyen_par_departement"],
+                    metrics["restaurants_par_departement"],
                     geojson=geojson_data,
-                    locations="Nom Actuel Département Décès",
+                    locations="Département",
                     featureidkey="properties.nom",
-                    color="Age",
-                    hover_name="Nom Actuel Département Décès",
-                    hover_data=["Age"],
-                    color_continuous_scale="Viridis",
-                    title="Âge moyen de décès par département"
-                ).update_geos(visible=False, fitbounds="locations", resolution=50)
-            )
-        elif button_id == "btn-sexe":
-            return dcc.Graph(
-                id='graph-repartition-sexe',
-                figure=px.pie(
-                    metrics["repartition_sexe"],
-                    names='index',
-                    values='Sexe',
-                    title="Répartition des décès par sexe"
+                    color="Count",
+                    hover_name="Département",
+                    hover_data=["Count"],
+                    color_continuous_scale="Turbo",  
+                    title="Nombre de restaurants par département",
+                    range_color=[0, 5000] 
+                ).update_geos(
+                    visible=False, 
+                    fitbounds="locations", 
+                    resolution=50
+                ).update_layout(
+                    height=600,  # Hauteur de la carte
+                    width = 1200,  # Largeur de la carte
+                    margin={"r":0, "t":0, "l":0, "b":0},  
+                    title="Nombre de restaurants par département"
                 )
             )
+
         elif button_id == "btn-region":
             return dcc.Graph(
-                id='graph-evolution-region',
-                figure=px.area(
-                    metrics["deces_par_region_annee"],
-                    x='Année Décès',
+                id='graph-repartition-region',
+                figure=px.bar(
+                    metrics["restaurants_par_region"],
+                    x='Région',
                     y='Count',
-                    color='Nom Actuel Région Décès',
-                    title="Évolution des décès par région",
-                    labels={"Nom Actuel Région Décès": "Région", "Count": "Nombre de décès"}
+                    title="Nombre de restaurants par région",
+                    labels={"Région": "Région", "Count": "Nombre de restaurants"}
                 ).update_layout(template="plotly_white")
             )
-        elif button_id == "btn-distribution":
+        elif button_id == "btn-commune":
             return dcc.Graph(
-                id='graph-distribution-ages',
-                figure=px.histogram(
-                    metrics["distribution_ages"],
-                    nbins=20,
-                    title="Distribution des âges au décès",
-                    labels={"value": "Âge", "count": "Nombre de décès"}
-                )
-            )
-        elif button_id == "btn-treemap":
-            dropdown = dcc.Dropdown(
-                id="year-dropdown",  # ID modifié pour correspondre au callback
-                options=[{'label': str(year), 'value': year}
-                        for year in sorted(set(item['Année Décès'] for item in metrics["deces_par_region_annee"]))
-                        ],
-                value=min([item['Année Décès'] for item in metrics["deces_par_region_annee"]]),  # Valeur par défaut
-                placeholder="Sélectionnez une année",
-                style={"width": "50%", "margin": "0 auto"}
-            )
-            return html.Div([
-                    dropdown,
-                    dcc.Graph(id='treemap-dynamic')
-    ])
-
-
-        elif button_id == "btn-top-10-communes":
-            top_10_communes = sorted(
-                metrics["deces_par_commune"],  # Assurez-vous que cette clé existe
-                key=lambda x: x["Count"],
-                reverse=True
-            )[:10]  # Prenez les 10 premières communes
-    
-            return dcc.Graph(
-                id='graph-top-10-communes',
+                id='graph-repartition-commune',
                 figure=px.bar(
-                    top_10_communes,
+                    metrics["restaurants_par_commune"],
                     x='Commune',
                     y='Count',
-                    title="Top 10 des communes avec le plus de décès",
-                    labels={"Commune": "Commune", "Count": "Nombre de décès"}
+                    title="Nombre de restaurants par commune",
+                    labels={"Commune": "Commune", "Count": "Nombre de restaurants"}
                 ).update_layout(template="plotly_white")
-    )
-
-
-    # Callback pour mettre à jour le treemap en fonction du slider
-    @app.callback(
-
-        Output("treemap-dynamic", "figure"),
-        [Input("year-dropdown", "value")],
-        State("metrics-store", "data")
-    )
-    def update_treemap(selected_year, metrics):
-      
-    # Filtrer les données pour l'année sélectionnée
-      if selected_year is None:  # Si aucune année n'est sélectionnée
-        return px.treemap(title="Veuillez sélectionner une année")
-    
-    # Filtrer les données pour l'année sélectionnée
-      filtered_data = [item for item in metrics["deces_par_region_annee"] if item['Année Décès'] == selected_year]
-    
-    # Générer le graphique Treemap
-      return px.treemap(
-        filtered_data,
-        path=[px.Constant('France'), 'Nom Actuel Région Décès'],  # Chemin hiérarchique
-        values='Count',
-        color='Count',
-        color_continuous_scale="Viridis",
-        title=f"Répartition des décès par région en {selected_year}"
-    ).update_layout(template="plotly_white")
+            )
 
     # Lancer le tableau de bord
     app.run_server(debug=False)
 
 
 def main():
-    # Charger les données brutes
-    raw_data = get_local_data("decees_en_france_raw.csv")
+    # Charge les données brutes
+    raw_data = get_local_data("osm-france-food-service.csv")
     print("Données brutes chargées :")
     print(raw_data.head())
 
-    # Nettoyer les données
+    # Nettoie les données
     cleaned_data = clean_data(raw_data)
     print("\nDonnées nettoyées :")
     print(cleaned_data.head())
 
-    # Sauvegarder les données nettoyées
+    # Sauvegarde les données nettoyées
     save_cleaned_data(cleaned_data, "cleaneddata.csv")
     print("\nDonnées nettoyées sauvegardées dans le dossier Downloads.")
 
     metrics = prepare_metrics(cleaned_data)
 
-    # Créer et afficher le tableau de bord
+    # Crée et affiche le tableau de bord
     create_dashboard(cleaned_data, metrics)
 
 

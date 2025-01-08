@@ -1,37 +1,35 @@
-# src/utils/clean_data.py
-
 import pandas as pd
 import os
 
-
 def clean_data(data: pd.DataFrame) -> pd.DataFrame:
     """
-    Nettoie et prépare les données.
+    Nettoie et prépare les données relatives aux restaurants.
 
-    :param data: DataFrame brut.
+    :param data: DataFrame brut contenant les informations sur les restaurants.
     :return: DataFrame nettoyé.
     """
-    # Nettoyer les noms de colonnes
+    # Nettoye les noms de colonnes
     data.columns = data.columns.str.strip().str.replace('\s+', ' ', regex=True)
     print("Colonnes normalisées :", data.columns)
 
-    # Vérifiez si "Date Décès" ou similaire est présent
-    date_deces_col = [col for col in data.columns if "Date" in col and "Déc" in col]
-    if not date_deces_col:
-        raise KeyError("La colonne 'Date Décès' est introuvable dans le fichier CSV.")
+    if 'Nom' not in data.columns or 'Commune' not in data.columns or 'Région' not in data.columns:
+        raise KeyError("Certaines colonnes nécessaires sont manquantes : 'Nom', 'Commune', 'Région'.")
+
+
+    data['nom_complet'] = data['Nom'] + " - " + data['Commune']
+
+    data[['latitude', 'longitude']] = data['OSM Point'].str.split(',', expand=True)
     
-    # Utilisez le nom exact trouvé
-    data['Date Décès'] = pd.to_datetime(data[date_deces_col[0]], errors='coerce')
-    data['Date Naissance'] = pd.to_datetime(data['Date Naissance'], errors='coerce')
+    data['latitude'] = pd.to_numeric(data['latitude'], errors='coerce')
+    data['longitude'] = pd.to_numeric(data['longitude'], errors='coerce')
 
-    # Calcul de l'âge
-    data['Age'] = (data['Date Décès'] - data['Date Naissance']).dt.days // 365
-    data['Année Décès'] = data['Date Décès'].dt.year
+    data = data.dropna(subset=['latitude', 'longitude'])
 
-    # Supprimer les lignes avec des données manquantes
-    data = data.dropna(subset=['Age', 'Année Décès', 'Nom Actuel Région Décès'])
+  
+    data['Région'] = data['Région'].astype('category')
+    data['Département'] = data['Département'].astype('category')
+
     return data
-
 
 
 
@@ -48,39 +46,30 @@ def save_cleaned_data(data: pd.DataFrame, file_name: str):
 
 def prepare_metrics(data: pd.DataFrame) -> dict:
     """
-    Prépare les métriques nécessaires pour le tableau de bord.
+    Prépare les métriques nécessaires pour le tableau de bord avec des données de restaurants.
 
-    :param data: DataFrame brut ou nettoyé contenant les données.
+    :param data: DataFrame brut ou nettoyé contenant les données des restaurants.
     :return: Dictionnaire contenant les métriques pré-calculées.
     """
-    # Calcul de l'âge moyen par année
-    age_moyen_par_an = data.groupby('Année Décès')['Age'].mean().reset_index()
-    age_moyen_par_an = age_moyen_par_an.to_dict(orient='records')  # Conversion en liste de dictionnaires
+    # Nombre de restaurants par type
+    restaurants_par_type = data['Type'].value_counts().reset_index()
+    restaurants_par_type.columns = ['Type', 'Count']
+    restaurants_par_type = restaurants_par_type.to_dict(orient='records')
 
-    # Calcul de l'âge moyen par département
-    age_moyen_par_departement = data.groupby('Nom Actuel Département Décès')['Age'].mean().reset_index()
-    age_moyen_par_departement = age_moyen_par_departement.to_dict(orient='records')  # Conversion en liste de dictionnaires
+    # Nombre de restaurants par région
+    restaurants_par_departement = data.groupby('Département')['Nom'].count().reset_index(name='Count')
+    restaurants_par_departement = restaurants_par_departement.to_dict(orient='records')
 
-    # Répartition des sexes
-    repartition_sexe = data['Sexe'].value_counts().reset_index()
-    repartition_sexe.columns = ['index', 'Sexe']
-    repartition_sexe = repartition_sexe.to_dict(orient='records')  # Conversion en liste de dictionnaires
+    # Distribution géographique des restaurants
+    geo_points = data[['Nom', 'latitude', 'longitude']].dropna(subset=['latitude', 'longitude']).to_dict(orient='records')
 
-    # Nombre de décès par région et par année
-    deces_par_region_annee = data.groupby(['Année Décès', 'Nom Actuel Région Décès']).size().reset_index(name='Count')
-    deces_par_region_annee = deces_par_region_annee.to_dict(orient='records')  # Conversion en liste de dictionnaires
-
-    # Distribution des âges
-    distribution_ages = data['Age'].tolist()  # Conversion en liste
-
-
+    # Nombre de restaurants par commune
+    restaurants_par_commune = data.groupby('Commune')['Nom'].count().reset_index(name='Count')
+    restaurants_par_commune = restaurants_par_commune.to_dict(orient='records')
 
     return {
-        "age_moyen_par_an": age_moyen_par_an,
-        "age_moyen_par_departement": age_moyen_par_departement,
-        "repartition_sexe": repartition_sexe,
-        "deces_par_region_annee": deces_par_region_annee,
-        "distribution_ages": distribution_ages,
+        "restaurants_par_type": restaurants_par_type,
+        "restaurants_par_departement": restaurants_par_departement,
+        "geo_points": geo_points,
+        "restaurants_par_commune": restaurants_par_commune,
     }
-
-
