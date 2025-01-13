@@ -20,34 +20,110 @@ def create_dashboard(data: pd.DataFrame, metrics):
 
     # Mémorisation des métriques
     app.layout = html.Div(
-        style={"backgroundColor": "#f7f7f7", "fontFamily": "Arial, sans-serif", "padding": "10px", "height": "100vh", "margin": "0"},
+        style={
+            "background": "linear-gradient(45deg, #f7f7f7, #e6e6e6)",  # Dégradé de fond
+            "fontFamily": "Arial, sans-serif",
+            "height": "100vh", 
+            "margin": "0", 
+            "display": "flex", 
+            "flexDirection": "row"
+        },
         children=[
-            html.Header(
-                style={"textAlign": "center", "padding": "20px", "backgroundColor": "#0044cc", "color": "white"},
-                children=[
-                    html.H1("Tableau de bord des restaurants en France"),
-                    html.P("Explorez les tendances et les données liées aux restaurants en France.")
-                ]
-            ),
 
-            # Boutons pour basculer entre les graphes
+            # Barre latérale à gauche pour choisir le graphique
             html.Div(
-                style={"display": "flex", "justifyContent": "center", "margin": "20px 0"},
+                style={
+                    "width": "20%", 
+                    "backgroundColor": "#0044cc", 
+                    "color": "white", 
+                    "padding": "20px", 
+                    "display": "flex", 
+                    "flexDirection": "column", 
+                    "alignItems": "center", 
+                    "height": "100vh"
+                },
                 children=[
-                    html.Button("Répartition par type de restaurant", id="btn-type", n_clicks=0, style={"margin": "10px"}),
-                    html.Button("Carte des restaurants", id="btn-carte", n_clicks=0, style={"margin": "10px"}),
-                    html.Button("Répartition par région", id="btn-region", n_clicks=0, style={"margin": "10px"}),
-                    html.Button("Répartition par commune", id="btn-commune", n_clicks=0, style={"margin": "10px"})
+                    html.H2("Tableau de bord", style={"textAlign": "center", "marginBottom": "30px"}),
+                    html.Button("Répartition par type de restaurant", id="btn-type", n_clicks=0, style={"margin": "10px", "width": "100%"}),
+                    html.Button("Carte des restaurants", id="btn-carte", n_clicks=0, style={"margin": "10px", "width": "100%"}),
+                    html.Button("Répartition par région", id="btn-region", n_clicks=0, style={"margin": "10px", "width": "100%"}),
+                    html.Button("Répartition par commune", id="btn-commune", n_clicks=0, style={"margin": "10px", "width": "100%"})
                 ]
             ),
 
-            # Contenu dynamique des graphes
-            dcc.Store(id="metrics-store", data=metrics),  
-            html.Div(id="content", style={"padding": "20px", "flex": 1}),
-
-            html.Footer(
-                style={"textAlign": "center", "marginTop": "20px", "padding": "10px", "backgroundColor": "#333", "color": "white"},
-                children="Données issues des enregistrements officiels - Projet 2025"
+            # Contenu principal avec un fond dégradé, qui affiche les graphes
+            html.Div(
+                id="content", 
+                style={
+                    "flex": "1", 
+                    "padding": "20px", 
+                    "display": "flex", 
+                    "flexDirection": "column", 
+                    "alignItems": "center", 
+                    "height": "100vh"
+                },
+                children=[
+                    # Affichage par défaut de tous les graphes
+                    dcc.Graph(
+                        id='graph-repartition-type',
+                        figure=px.pie(
+                            metrics["restaurants_par_type"],
+                            names='Type',
+                            values='Count',
+                            title="Répartition des restaurants par type"
+                        ).update_layout(
+                            template="plotly_white", height=600, width=1200, margin={"r":0, "t":0, "l":0, "b":0}
+                        )
+                    ),
+                    dcc.Graph(
+                        id='map-restaurant-par-departement',
+                        figure=px.choropleth(
+                            metrics["restaurants_par_departement"],
+                            geojson=geojson_data,
+                            locations="Département",
+                            featureidkey="properties.nom",
+                            color="Count",
+                            hover_name="Département",
+                            hover_data=["Count"],
+                            color_continuous_scale="Turbo",  
+                            title="Nombre de restaurants par département",
+                            range_color=[0, 5000]
+                        ).update_geos(
+                            visible=False, 
+                            fitbounds="locations", 
+                            resolution=50
+                        ).update_layout(
+                            height=600, 
+                            width = 1200,  
+                            margin={"r":0, "t":0, "l":0, "b":0}, 
+                            title="Nombre de restaurants par département"
+                        )
+                    ),
+                    dcc.Graph(
+                        id='graph-repartition-region',
+                        figure=px.bar(
+                            metrics["restaurants_par_region"],
+                            x='Région',
+                            y='Count',
+                            title="Nombre de restaurants par région",
+                            labels={"Région": "Région", "Count": "Nombre de restaurants"}
+                        ).update_layout(
+                            template="plotly_white", height=600, width=1200, margin={"r":0, "t":0, "l":0, "b":0}
+                        )
+                    ),
+                    dcc.Graph(
+                        id='graph-repartition-commune',
+                        figure=px.bar(
+                            metrics["restaurants_par_commune"],
+                            x='Commune',
+                            y='Count',
+                            title="Nombre de restaurants par commune",
+                            labels={"Commune": "Commune", "Count": "Nombre de restaurants"}
+                        ).update_layout(
+                            template="plotly_white", height=600, width=1200, margin={"r":0, "t":0, "l":0, "b":0}
+                        )
+                    )
+                ]
             )
         ]
     )
@@ -59,10 +135,10 @@ def create_dashboard(data: pd.DataFrame, metrics):
          Input("btn-carte", "n_clicks"),
          Input("btn-region", "n_clicks"),
          Input("btn-commune", "n_clicks")],
-        State("metrics-store", "data") 
+        State("metrics-store", "data")  # Récupérer les métriques sérialisées
     )
     def display_content(btn_type, btn_carte, btn_region, btn_commune, metrics):
-        ctx = dash.callback_context  # Identifie le bouton cliqué
+        ctx = dash.callback_context  # Identifier le bouton cliqué
         if not ctx.triggered:
             return html.Div("Sélectionnez un graphique à afficher.")
 
@@ -77,6 +153,8 @@ def create_dashboard(data: pd.DataFrame, metrics):
                     names='Type',
                     values='Count',
                     title="Répartition des restaurants par type"
+                ).update_layout(
+                    template="plotly_white", height=600, width=1200, margin={"r":0, "t":0, "l":0, "b":0}
                 )
             )
         elif button_id == "btn-carte":
@@ -92,15 +170,15 @@ def create_dashboard(data: pd.DataFrame, metrics):
                     hover_data=["Count"],
                     color_continuous_scale="Turbo",  
                     title="Nombre de restaurants par département",
-                    range_color=[0, 5000] 
+                    range_color=[0, 5000]
                 ).update_geos(
                     visible=False, 
                     fitbounds="locations", 
                     resolution=50
                 ).update_layout(
-                    height=600,  # Hauteur de la carte
-                    width = 1200,  # Largeur de la carte
-                    margin={"r":0, "t":0, "l":0, "b":0},  
+                    height=600, 
+                    width = 1200,  
+                    margin={"r":0, "t":0, "l":0, "b":0}, 
                     title="Nombre de restaurants par département"
                 )
             )
@@ -114,7 +192,9 @@ def create_dashboard(data: pd.DataFrame, metrics):
                     y='Count',
                     title="Nombre de restaurants par région",
                     labels={"Région": "Région", "Count": "Nombre de restaurants"}
-                ).update_layout(template="plotly_white")
+                ).update_layout(
+                    template="plotly_white", height=600, width=1200, margin={"r":0, "t":0, "l":0, "b":0}
+                )
             )
         elif button_id == "btn-commune":
             return dcc.Graph(
@@ -125,7 +205,9 @@ def create_dashboard(data: pd.DataFrame, metrics):
                     y='Count',
                     title="Nombre de restaurants par commune",
                     labels={"Commune": "Commune", "Count": "Nombre de restaurants"}
-                ).update_layout(template="plotly_white")
+                ).update_layout(
+                    template="plotly_white", height=600, width=1200, margin={"r":0, "t":0, "l":0, "b":0}
+                )
             )
 
     # Lancer le tableau de bord
@@ -133,23 +215,23 @@ def create_dashboard(data: pd.DataFrame, metrics):
 
 
 def main():
-    # Charge les données brutes
+    # Charger les données brutes
     raw_data = get_local_data("osm-france-food-service.csv")
     print("Données brutes chargées :")
     print(raw_data.head())
 
-    # Nettoie les données
+    # Nettoyer les données
     cleaned_data = clean_data(raw_data)
     print("\nDonnées nettoyées :")
     print(cleaned_data.head())
 
-    # Sauvegarde les données nettoyées
+    # Sauvegarder les données nettoyées
     save_cleaned_data(cleaned_data, "cleaneddata.csv")
     print("\nDonnées nettoyées sauvegardées dans le dossier Downloads.")
 
     metrics = prepare_metrics(cleaned_data)
 
-    # Crée et affiche le tableau de bord
+    # Créer et afficher le tableau de bord
     create_dashboard(cleaned_data, metrics)
 
 

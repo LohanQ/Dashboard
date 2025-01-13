@@ -60,6 +60,9 @@ def prepare_metrics(data: pd.DataFrame) -> dict:
     restaurants_par_departement = data.groupby('Département')['Nom'].count().reset_index(name='Count')
     restaurants_par_departement = restaurants_par_departement.to_dict(orient='records')
 
+    restaurants_par_region = data.groupby('Région')['Nom'].count().reset_index(name='Count')
+    restaurants_par_region = restaurants_par_region.to_dict(orient='records')
+
     # Distribution géographique des restaurants
     geo_points = data[['Nom', 'latitude', 'longitude']].dropna(subset=['latitude', 'longitude']).to_dict(orient='records')
 
@@ -70,6 +73,7 @@ def prepare_metrics(data: pd.DataFrame) -> dict:
     return {
         "restaurants_par_type": restaurants_par_type,
         "restaurants_par_departement": restaurants_par_departement,
+        "restaurants_par_region": restaurants_par_region,
         "geo_points": geo_points,
         "restaurants_par_commune": restaurants_par_commune,
     }
