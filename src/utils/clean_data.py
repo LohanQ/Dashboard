@@ -8,7 +8,7 @@ def clean_data(data: pd.DataFrame) -> pd.DataFrame:
     :param data: DataFrame brut contenant les informations sur les restaurants.
     :return: DataFrame nettoyé.
     """
-    # Nettoye les noms de colonnes
+    # Nettoie les noms de colonnes
     data.columns = data.columns.str.strip().str.replace('\s+', ' ', regex=True)
     print("Colonnes normalisées :", data.columns)
 
@@ -56,14 +56,15 @@ def prepare_metrics(data: pd.DataFrame) -> dict:
     restaurants_par_type.columns = ['Type', 'Count']
     restaurants_par_type = restaurants_par_type.to_dict(orient='records')
 
-    # Nombre de restaurants par région
-    restaurants_par_departement = data.groupby('Département')['Nom'].count().reset_index(name='Count')
-    restaurants_par_departement = restaurants_par_departement.to_dict(orient='records')
+    # Nombre de restaurants par département
+    restaurants_par_departement_type = data.groupby(['Département', 'Type'])['Nom'].count().reset_index(name='Count')
+    restaurants_par_departement_type = restaurants_par_departement_type.to_dict(orient='records')
 
+    # Nombre de restaurants par région 
     restaurants_par_region = data.groupby('Région')['Nom'].count().reset_index(name='Count')
     restaurants_par_region = restaurants_par_region.to_dict(orient='records')
 
-    # Distribution géographique des restaurants
+    # restaurants en fonction des coordonnées 
     geo_points = data[['Nom', 'latitude', 'longitude']].dropna(subset=['latitude', 'longitude']).to_dict(orient='records')
 
     # Nombre de restaurants par commune
@@ -72,7 +73,7 @@ def prepare_metrics(data: pd.DataFrame) -> dict:
 
     return {
         "restaurants_par_type": restaurants_par_type,
-        "restaurants_par_departement": restaurants_par_departement,
+        "restaurants_par_departement": restaurants_par_departement_type,
         "restaurants_par_region": restaurants_par_region,
         "geo_points": geo_points,
         "restaurants_par_commune": restaurants_par_commune,

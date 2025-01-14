@@ -15,7 +15,7 @@ def get_local_data(file_name: str) -> pd.DataFrame:
     #url = 'https://public.opendatasoft.com/explore/dataset/liste-des-personnes-decedees-en-france/download/?format=csv&timezone=Europe/Berlin&lang=fr'
 
     try:
-            # Lire le fichier complet
+            # Lis le fichier complet
             data = pd.read_csv(raw_data_path, on_bad_lines='skip', sep=";")
     except pd.errors.ParserError as e:
         print(f"Erreur lors de la lecture du fichier CSV: {e}")
