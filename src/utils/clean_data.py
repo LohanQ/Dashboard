@@ -40,7 +40,9 @@ def save_cleaned_data(data: pd.DataFrame, file_name: str):
     :param data: DataFrame à sauvegarder.
     :param file_name: Nom du fichier de sortie.
     """
-    cleaned_data_path = os.path.join(r"C:\\Users\\lohan\\Downloads", file_name)
+    script_dir = os.path.dirname(__file__)
+    dashboard_dir = os.path.abspath(os.path.join(script_dir, "..", ".."))
+    cleaned_data_path = os.path.join(dashboard_dir, file_name)
     data.to_csv(cleaned_data_path, index=False, sep=";")
     print(f"Fichier sauvegardé : {cleaned_data_path}")
 

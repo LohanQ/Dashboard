@@ -116,7 +116,6 @@ def create_dashboard(data: pd.DataFrame, metrics):
             )
                
         elif button_id == "btn-commune":
-            s
             departements = list({item["Département"] for item in metrics["restaurants_par_departement"]})
             departements.sort()  
 
