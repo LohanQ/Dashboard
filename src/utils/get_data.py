@@ -11,12 +11,12 @@ def get_local_data(file_name: str) -> pd.DataFrame:
     :param chunksize: Taille des morceaux à charger (None pour charger tout le fichier d'un coup).
     :return: DataFrame pandas contenant les données chargées ou un DataFrame combiné si chunksize est utilisé.
     """
-    raw_data_path = os.path.join(r"C:\\Users\\lohan\\Downloads", file_name)
-    #url = 'https://public.opendatasoft.com/explore/dataset/liste-des-personnes-decedees-en-france/download/?format=csv&timezone=Europe/Berlin&lang=fr'
+    #raw_data_path = os.path.join(r"C:\\Users\\lohan\\Downloads", file_name)
+    url = 'https://public.opendatasoft.com/api/explore/v2.1/catalog/datasets/osm-france-food-service/exports/csv?lang=fr&timezone=Europe%2FBerlin&use_labels=true&delimiter=%3B'
 
     try:
             # Lis le fichier complet
-            data = pd.read_csv(raw_data_path, on_bad_lines='skip', sep=";")
+            data = pd.read_csv(url, on_bad_lines='skip', sep=";")
     except pd.errors.ParserError as e:
         print(f"Erreur lors de la lecture du fichier CSV: {e}")
         raise
