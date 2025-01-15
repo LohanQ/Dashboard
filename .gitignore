@@ -9,3 +9,5 @@
 __pycache__
 /.vs/Dashboard/
 /.vs/
+/.vs/Dashboard/cleaneddata.csv
+/cleaneddata.csv
