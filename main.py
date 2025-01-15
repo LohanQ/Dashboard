@@ -17,7 +17,8 @@ def create_dashboard(data: pd.DataFrame, metrics):
         geojson_data = json.load(f)
 
 
-    app = dash.Dash(__name__)
+    app = dash.Dash(__name__, suppress_callback_exceptions=True)
+
 
 
     app.layout = html.Div(
@@ -179,7 +180,6 @@ def main():
 
     # Sauvegarde les données nettoyées
     save_cleaned_data(cleaned_data, "cleaneddata.csv")
-    print("\nDonnées nettoyées sauvegardées dans le dossier Downloads.")
 
     metrics = prepare_metrics(cleaned_data)
 
