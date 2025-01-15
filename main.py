@@ -1,3 +1,4 @@
+import webbrowser
 from config import CONFIG
 from src.utils.get_data import get_local_data
 from src.utils.clean_data import clean_data, save_cleaned_data, prepare_metrics
@@ -7,6 +8,7 @@ import plotly.express as px
 import json
 from dash import dcc, html, Input, Output, State
 import dash
+from threading import Timer 
 
 def create_dashboard(data: pd.DataFrame, metrics):
     """
@@ -164,7 +166,16 @@ def create_dashboard(data: pd.DataFrame, metrics):
         ).update_layout(template="plotly_white")
 
      # Lancer le tableau de bord
-    app.run_server(debug=CONFIG['DEBUG'])
+
+
+
+    def open_browser():
+        webbrowser.open_new(f"http://127.0.0.1:8050/")
+
+    Timer(1, open_browser).start()
+    app.run_server()
+
+
 
 
 def main():
