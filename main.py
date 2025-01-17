@@ -8,7 +8,8 @@ import plotly.express as px
 import json
 from dash import dcc, html, Input, Output, State
 import dash
-from threading import Timer 
+import dash_bootstrap_components as dbc
+from threading import Timer
 
 def create_dashboard(data: pd.DataFrame, metrics):
     """
@@ -18,38 +19,46 @@ def create_dashboard(data: pd.DataFrame, metrics):
     with open('departements.geojson', 'r', encoding='utf-8') as f:
         geojson_data = json.load(f)
 
+    app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP], suppress_callback_exceptions=True)
 
-    app = dash.Dash(__name__, suppress_callback_exceptions=True)
+    style_card = {
+        "backgroundColor": "#f8f9fa",
+        "borderRadius": "10px",  
+        "boxShadow": "0 4px 6px rgba(0, 0, 0, 0.1)", 
+        "padding": "20px",
+        "transition": "transform 0.3s ease-in-out"
+    }
 
+    style_header = {
+        "font-family": "Poppins, sans-serif", 
+        "font-weight": "600", 
+    }
 
+    style_button = {
+        "transition": "all 0.3s ease-in-out",
+    }
 
-    app.layout = html.Div(
-        style={"backgroundColor": "#f7f7f7", "fontFamily": "Arial, sans-serif", "padding": "10px", "height": "100vh", "margin": "0"},
+    app.layout = dbc.Container(
+        fluid=True,
         children=[
-            html.Header(
-                style={"textAlign": "center", "padding": "20px", "backgroundColor": "#0044cc", "color": "white"},
-                children=[
-                    html.H1("Tableau de bord des restaurants en France"),
-                    html.P("Explorez les tendances et les données liées aux restaurants en France.")
-                ]
+            dcc.Store(id="metrics-store", data=metrics), 
+            dbc.Row(
+                dbc.Col(
+                    html.H1("Tableau de bord des restaurants", className="text-center text-primary mb-4", style=style_header),
+                    style={"backgroundColor": "#f8f9fa", "padding": "20px", "borderRadius": "10px"}
+                )
             ),
-
-            html.Div(
-                style={"display": "flex", "justifyContent": "center", "margin": "20px 0"},
-                children=[
-                    html.Button("Répartition par type de restaurant", id="btn-type", n_clicks=0, style={"margin": "10px"}),
-                    html.Button("Carte des restaurants", id="btn-carte", n_clicks=0, style={"margin": "10px"}),
-                    html.Button("Répartition par région", id="btn-region", n_clicks=0, style={"margin": "10px"}),
-                    html.Button("Répartition par commune", id="btn-commune", n_clicks=0, style={"margin": "10px"})
-                ]
+            dbc.Row([
+                dbc.Col(dbc.Button("Répartition par type", id="btn-type", color="primary", className="m-2 w-100", style=style_button), width=3),
+                dbc.Col(dbc.Button("Carte des restaurants", id="btn-carte", color="secondary", className="m-2 w-100", style=style_button), width=3),
+                dbc.Col(dbc.Button("Répartition par région", id="btn-region", color="success", className="m-2 w-100", style=style_button), width=3),
+                dbc.Col(dbc.Button("Répartition par commune", id="btn-commune", color="danger", className="m-2 w-100", style=style_button), width=3),
+            ], justify="center", style={"marginBottom": "20px"}),
+            dbc.Row(
+                dbc.Col(html.Div(id="content", className="p-4", style=style_card), width=12)
             ),
-
-            dcc.Store(id="metrics-store", data=metrics),  
-            html.Div(id="content", style={"padding": "20px", "flex": 1}),
-
-            html.Footer(
-                style={"textAlign": "center", "marginTop": "20px", "padding": "10px", "backgroundColor": "#333", "color": "white"},
-                children="Données issues des enregistrements officiels - Projet 2025"
+            dbc.Row(
+                dbc.Col(html.Footer("Données officielles - Projet 2025", className="text-center text-white bg-dark py-3"), style={"marginTop": "20px"})
             )
         ]
     )
@@ -60,143 +69,118 @@ def create_dashboard(data: pd.DataFrame, metrics):
          Input("btn-carte", "n_clicks"),
          Input("btn-region", "n_clicks"),
          Input("btn-commune", "n_clicks")],
-        State("metrics-store", "data")  
+        State("metrics-store", "data")
     )
     def display_content(btn_type, btn_carte, btn_region, btn_commune, metrics):
-        ctx = dash.callback_context  
+        ctx = dash.callback_context
         if not ctx.triggered:
-            return html.Div("Sélectionnez un graphique à afficher.")
+            return html.Div("Sélectionnez un graphique à afficher.", style={"textAlign": "center", "padding": "50px", "fontSize": "18px", "color": "#6c757d"})
 
-     
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
         if button_id == "btn-type":
             return dcc.Graph(
-                id='graph-repartition-type',
                 figure=px.pie(
                     metrics["restaurants_par_type"],
                     names='Type',
                     values='Count',
-                    title="Répartition des restaurants par type"
+                    title="Répartition des restaurants par type",
+                    template="seaborn",
+                ).update_traces(
+                    textinfo='percent+label'
                 )
             )
+
         elif button_id == "btn-carte":
             return dcc.Graph(
-                id='map-restaurant-par-departement',
                 figure=px.choropleth(
                     metrics["restaurants_par_departement"],
                     geojson=geojson_data,
                     locations="Département",
                     featureidkey="properties.nom",
                     color="Count",
-                    hover_name="Département",
-                    hover_data=["Count"],
-                    color_continuous_scale="Turbo", 
                     title="Nombre de restaurants par département",
-                    range_color=[0, 5000] 
                 ).update_geos(
-                    visible=False, 
-                    fitbounds="locations", 
+                    visible=False,
+                    fitbounds="locations",
                     resolution=50
                 ).update_layout(
-                    height=600,  
-                    width = 1200,  
-                    margin={"r":0, "t":0, "l":0, "b":0},  
-                    title="Nombre de restaurants par département"
+                    height=700,
                 )
             )
 
         elif button_id == "btn-region":
             return dcc.Graph(
-                id='graph-repartition-region',
                 figure=px.bar(
                     metrics["restaurants_par_region"],
                     x='Région',
                     y='Count',
                     title="Nombre de restaurants par région",
-                    labels={"Région": "Région", "Count": "Nombre de restaurants"}
-                ).update_layout(template="plotly_white")
+                    text="Count"
+                ).update_traces(
+                    textposition='auto',
+                )
             )
-               
+
         elif button_id == "btn-commune":
-            departements = list({item["Département"] for item in metrics["restaurants_par_departement"]})
-            departements.sort()  
-
-            dropdown = dcc.Dropdown(
-                id="departement-dropdown",
-                options=[{"label": departement, "value": departement} for departement in departements],
-                value=departements[0] if departements else None,
-                placeholder="Sélectionnez un département",
-                style={"width": "50%", "margin": "0 auto", "padding": "10px"},
-            )
-            return html.Div(
-                [
-                    dropdown,
-                    dcc.Graph(id="treemap-dynamic"),
-                ]
-        )
-
+            departements = sorted(list({item["Département"] for item in metrics["restaurants_par_departement"]}))
+            return html.Div([
+                dcc.Dropdown(
+                    id="departement-dropdown",
+                    options=[{"label": dep, "value": dep} for dep in departements],
+                    value=departements[0] if departements else None,
+                    placeholder="Sélectionnez un département",
+                    style={"width": "50%", "margin": "0 auto", "marginBottom": "20px"}
+                ),
+                dcc.Graph(id="treemap-dynamic")
+            ])
 
     @app.callback(
-    Output("treemap-dynamic", "figure"),
-    [Input("departement-dropdown", "value")],
-    State("metrics-store", "data"),
-
+        Output("treemap-dynamic", "figure"),
+        [Input("departement-dropdown", "value")],
+        State("metrics-store", "data")
     )
     def update_treemap(selected_departement, metrics):
-
-        if selected_departement is None:  
+        if not selected_departement:
             return px.treemap(title="Veuillez sélectionner un département")
 
-
-        filtered_data = [item for item in metrics["restaurants_par_departement"] if item['Département'] == selected_departement]
-        filtered_data = [item for item in filtered_data if item['Count'] > 0]
+        filtered_data = [item for item in metrics["restaurants_par_departement"] 
+                        if item['Département'] == selected_departement]
 
         if not filtered_data:
-            return px.treemap(title=f"Aucun restaurant trouvé pour le département {selected_departement}")
+            return px.treemap(title=f"Aucun restaurant trouvé pour {selected_departement}")
 
-        
-        return px.treemap(
+        fig = px.treemap(
             filtered_data,
-            path=['Département', 'Type'], 
-            values='Count',  
-            color='Count', 
-            color_continuous_scale="Viridis", 
-            title=f"Répartition des restaurants par type dans le département {selected_departement}"
-        ).update_layout(template="plotly_white")
-
-     # Lancer le tableau de bord
-
-
+            path=['Département', 'Type'],
+            values='Count',
+            title=f"Répartition des restaurants par type dans {selected_departement}"
+        )
+        
+        fig.update_layout(
+            height=600,
+        )
+        
+        return fig
 
     def open_browser():
-        webbrowser.open_new(f"http://127.0.0.1:8050/")
+        webbrowser.open_new("http://127.0.0.1:8050/")
 
     Timer(1, open_browser).start()
     app.run_server()
 
-
-
-
 def main():
-    # Charge les données brutes
     raw_data = get_local_data("osm-france-food-service.csv")
     print("Données brutes chargées :")
     print(raw_data.head())
 
-    # Nettoie les données
     cleaned_data = clean_data(raw_data)
     print("\nDonnées nettoyées :")
     print(cleaned_data.head())
 
-    # Sauvegarde les données nettoyées
     save_cleaned_data(cleaned_data, "cleaneddata.csv")
-
     metrics = prepare_metrics(cleaned_data)
-
-    # Créer et affiche le tableau de bord
     create_dashboard(cleaned_data, metrics)
-
 
 if __name__ == "__main__":
     main()
