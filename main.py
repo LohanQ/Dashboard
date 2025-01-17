@@ -52,14 +52,15 @@ def create_dashboard(data: pd.DataFrame, metrics):
                 dbc.Col(dbc.Button("Répartition par type", id="btn-type", color="primary", className="m-2 w-100", style=style_button), width=3),
                 dbc.Col(dbc.Button("Carte des restaurants", id="btn-carte", color="secondary", className="m-2 w-100", style=style_button), width=3),
                 dbc.Col(dbc.Button("Répartition par région", id="btn-region", color="success", className="m-2 w-100", style=style_button), width=3),
-                dbc.Col(dbc.Button("Répartition par commune", id="btn-commune", color="danger", className="m-2 w-100", style=style_button), width=3),
+                dbc.Col(dbc.Button("Répartition par departement", id="btn-departement", color="danger", className="m-2 w-100", style=style_button), width=3),
+                dbc.Col(dbc.Button("Trouve ton restaurant", id="btn-restaurant", color="dark", className="m-2 w-100", style=style_button), width=3),
             ], justify="center", style={"marginBottom": "20px"}),
             dbc.Row(
                 dbc.Col(html.Div(id="content", className="p-4", style=style_card), width=12)
             ),
             dbc.Row(
                 dbc.Col(html.Footer("Données officielles - Projet 2025", className="text-center text-white bg-dark py-3"), style={"marginTop": "20px"})
-            )
+            ),
         ]
     )
 
@@ -68,10 +69,11 @@ def create_dashboard(data: pd.DataFrame, metrics):
         [Input("btn-type", "n_clicks"),
          Input("btn-carte", "n_clicks"),
          Input("btn-region", "n_clicks"),
-         Input("btn-commune", "n_clicks")],
+         Input("btn-departement", "n_clicks"),
+         Input("btn-restaurant", "n_clicks")],
         State("metrics-store", "data")
     )
-    def display_content(btn_type, btn_carte, btn_region, btn_commune, metrics):
+    def display_content(btn_type, btn_carte, btn_region, btn_departement,btn_restaurant, metrics):
         ctx = dash.callback_context
         if not ctx.triggered:
             return html.Div("Sélectionnez un graphique à afficher.", style={"textAlign": "center", "padding": "50px", "fontSize": "18px", "color": "#6c757d"})
@@ -122,24 +124,81 @@ def create_dashboard(data: pd.DataFrame, metrics):
                 )
             )
 
-        elif button_id == "btn-commune":
-            departements = sorted(list({item["Département"] for item in metrics["restaurants_par_departement"]}))
-            return html.Div([
-                dcc.Dropdown(
-                    id="departement-dropdown",
-                    options=[{"label": dep, "value": dep} for dep in departements],
-                    value=departements[0] if departements else None,
-                    placeholder="Sélectionnez un département",
-                    style={"width": "50%", "margin": "0 auto", "marginBottom": "20px"}
-                ),
-                dcc.Graph(id="treemap-dynamic")
-            ])
+        elif button_id == "btn-departement":
+        
+            departements = list({item["Département"] for item in metrics["restaurants_par_departement"]})
+            departements.sort()  
+
+            dropdown = dcc.Dropdown(
+                id="departement-dropdown",
+                options=[{"label": departement, "value": departement} for departement in departements],
+                value=departements[0] if departements else None,
+                placeholder="Sélectionnez un département",
+                style={"width": "50%", "margin": "0 auto", "padding": "10px"},
+            )
+            return html.Div(
+                [
+                    dropdown,
+                    dcc.Graph(id="treemap-dynamic"),
+                ]
+        )
+
+        elif button_id == "btn-restaurant":
+        
+
+            departements = list({item["Département"] for item in metrics["restaurants_par_departement"]})
+            departements.sort()  
+
+            dropdown1 = dcc.Dropdown(
+                id="restaurant-dropdown1",
+                options=[{"label": departement, "value": departement} for departement in departements],
+                value=departements[0] if departements else None,  
+                placeholder="Sélectionnez un département",
+                style={"width": "50%", "margin": "0 auto", "padding": "10px"},
+            )
+
+            dropdown2 = dcc.Dropdown(
+                id="restaurant-dropdown2",
+                options=[],  
+                value=None,  
+                placeholder="Sélectionnez un type de restaurant",
+                style={"width": "50%", "margin": "0 auto", "padding": "10px"},
+            )
+
+            dropdown3 = dcc.Dropdown(
+                id="restaurant-dropdown3",
+                options=[],  
+                value=None, 
+                placeholder="Sélectionnez un restaurant",
+                style={"width": "50%", "margin": "0 auto", "padding": "10px"},
+            )
+
+            recherche = dbc.Button(
+            "Rechercher sur Google",
+            id="restaurant-recherche-boutton",
+            color="primary",
+            style={"marginTop": "20px", "display": "none", "marginLeft": "auto", "marginRight": "auto", "textAlign": "center"}, 
+            href="",  
+            target="_blank",  
+            )
+
+            return html.Div(
+                [
+                    dropdown1,
+                    dropdown2,
+                    dropdown3,
+                    html.Div([recherche], style={"textAlign": "center", "marginTop": "20px"}),
+                    ])
+          
+
+
 
     @app.callback(
         Output("treemap-dynamic", "figure"),
         [Input("departement-dropdown", "value")],
-        State("metrics-store", "data")
+        State("metrics-store", "data"),
     )
+
     def update_treemap(selected_departement, metrics):
         if not selected_departement:
             return px.treemap(title="Veuillez sélectionner un département")
@@ -163,6 +222,80 @@ def create_dashboard(data: pd.DataFrame, metrics):
         
         return fig
 
+    @app.callback(
+        Output("restaurant-dropdown2", "options"),
+        [Input("restaurant-dropdown1", "value")],
+        State("metrics-store", "data")
+    )
+
+    def update_type_dropdown(departement, metrics):
+        if not departement:
+            return "aucun type de restaurant disponible";
+        
+
+        filtered_data = [
+            item for item in metrics["type_departement"]
+            if item["Département"] == departement
+        ]
+
+        types = []
+        for item in filtered_data:
+            types.extend(item["Type"]) 
+
+        return [{"label": t, "value": t} for t in sorted(set(types))] 
+
+
+
+    @app.callback(
+    Output("restaurant-dropdown3", "options"),
+    [Input("restaurant-dropdown2", "value"), Input("restaurant-dropdown1", "value")],
+    State("metrics-store", "data")
+)
+    def update_restaurant_dropdown(selected_type, selected_departement, metrics):
+        if not selected_type or not selected_departement:
+            return [] 
+
+        filtered_data = [
+            item for item in metrics["nom_type"]
+            if item["Type"] == selected_type and item["Département"] == selected_departement
+        ]
+
+        noms = []
+        for item in filtered_data:
+            if "Nom" in item and item["Nom"]:
+                noms.extend(item["Nom"])
+
+        return [{"label": t, "value": t} for t in sorted(set(n for n in noms if n))]
+
+
+
+    @app.callback(
+    [Output("restaurant-recherche-boutton", "href"),  
+     Output("restaurant-recherche-boutton", "style")],  
+    [Input("restaurant-dropdown3", "value"),
+     Input("restaurant-dropdown2", "value"),
+     Input("restaurant-dropdown1", "value")]
+    )
+    def search_restaurant_on_internet(selected_restaurant,selected_type, selected_departement):
+        
+        if selected_restaurant and selected_departement and selected_type:
+            # Effectue une recherche sur Google 
+            search_url = f"https://www.google.com/search?q={selected_restaurant}+{selected_type}+{selected_departement}"
+            return search_url, {"display": "inline-block"}  
+        return "", {"display": "none"}  
+
+
+
+    @app.callback(
+        Output("restaurant-link", "children"),  
+        [Input("restaurant-dropdown3", "value")]
+    )
+    def update_link_text(selected_restaurant):
+        if selected_restaurant:
+            return f"Chercher {selected_restaurant} sur Google"  
+        return "" 
+
+
     def open_browser():
         webbrowser.open_new("http://127.0.0.1:8050/")
 
@@ -180,7 +313,10 @@ def main():
 
     save_cleaned_data(cleaned_data, "cleaneddata.csv")
     metrics = prepare_metrics(cleaned_data)
+
     create_dashboard(cleaned_data, metrics)
+
+    
 
 if __name__ == "__main__":
     main()
