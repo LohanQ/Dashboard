@@ -4,7 +4,7 @@ from dash import html
 
 def create_header()-> dbc.Row:
     """
-    Crée l'entête du tableau de bord.
+    Crée l'en-tête du tableau de bord.
     :return: Un objet Row contenant un Header.
     """
     return dbc.Row(
