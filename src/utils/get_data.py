@@ -17,6 +17,7 @@ def get_data(file_name: str) -> pd.DataFrame:
             script_dir = os.path.dirname(__file__)
             dashboard_dir = os.path.abspath(os.path.join(script_dir, "..", ".."))
             dashboard_dir = os.path.join(dashboard_dir, "data","raw")
+            os.makedirs(dashboard_dir, exist_ok=True)
             raw_data_path = os.path.join(dashboard_dir, file_name)
             data.to_csv(raw_data_path, index=False, sep=";")
 

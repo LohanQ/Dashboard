@@ -11,3 +11,6 @@ __pycache__
 /env/
 /data/raw/osm-france-food-service.csv
 /data/cleaned/cleaneddata.csv
+/.ruff_cache
+/.mypy_cache
+/

@@ -96,6 +96,8 @@ def create_dashboard(data: pd.DataFrame,metrics: Dict[str, pd.DataFrame]) -> das
                     featureidkey="properties.nom",
                     color="Count",
                     title="Nombre de restaurants par département",
+                    color_continuous_scale="Turbo", 
+                    range_color=[0, 5000]
                 ).update_geos(
                     visible=False,
                     fitbounds="locations",
@@ -208,7 +210,7 @@ def create_dashboard(data: pd.DataFrame,metrics: Dict[str, pd.DataFrame]) -> das
         fig = px.treemap(
             filtered_data,
             path=['Département', 'Type'],
-            values='Count',
+            values='Count',  
             title=f"Répartition des restaurants par type dans {selected_departement}"
         )
         

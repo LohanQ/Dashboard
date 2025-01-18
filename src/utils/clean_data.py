@@ -42,6 +42,7 @@ def save_cleaned_data(data: pd.DataFrame, file_name: str)-> None:
     script_dir = os.path.dirname(__file__)
     dashboard_dir = os.path.abspath(os.path.join(script_dir, "..", ".."))
     dashboard_dir = os.path.join(dashboard_dir, "data","cleaned")
+    os.makedirs(dashboard_dir, exist_ok=True)
     cleaned_data_path = os.path.join(dashboard_dir, file_name)
     data.to_csv(cleaned_data_path, index=False, sep=";")
     print(f"Fichier sauvegardé : {cleaned_data_path}")
