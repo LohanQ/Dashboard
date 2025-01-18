@@ -15,7 +15,7 @@ from src.components.boutons import create_buttons
 
 def create_dashboard(data: pd.DataFrame, metrics):
     """
-    Crée un tableau de bord interactif avec Dash avec des optimisations pour le changement de graphes.
+    CrÃ©e un tableau de bord interactif avec Dash avec des optimisations pour le changement de graphes.
     """
 
     with open('data/departements.geojson', 'r', encoding='utf-8') as f:
@@ -42,26 +42,27 @@ def create_dashboard(data: pd.DataFrame, metrics):
 
 
     app.layout = dbc.Container(
-        fluid=True,
-        children=[
-            # Stockage des métriques
-            dcc.Store(id="metrics-store", data=metrics), 
+    fluid=True,
+    children=[
+        # Stockage des mÃ©triques
+        dcc.Store(id="metrics-store", data=metrics), 
 
-            # Appel du header
-            create_header(),  # Appel du composant header
+        # Appel du header
+        create_header(),  # Appel du composant header
 
-            # Appel des boutons
-            create_buttons(style_button),  # Appel de la fonction qui retourne les boutons
+        # Appel des boutons
+        create_buttons(style_button),  # Appel de la fonction qui retourne les boutons
 
-            # Contenu dynamique qui changera en fonction des clics
-            dbc.Row(
-                dbc.Col(html.Div(id="content", className="p-4", style=style_card), width=12)
-            ),
+        # Contenu dynamique qui changera en fonction des clics
+        dbc.Row(
+            dbc.Col(html.Div(id="content", className="p-4", style=style_card), width=12)
+        ),
 
-            # Appel du footer
-            create_footer(),  # Appel du composant footer
-        ]
-    )
+        # Appel du footer
+        create_footer(),  # Appel du composant footer
+    ]
+)
+
 
     @app.callback(
         Output("content", "children"),
@@ -75,7 +76,7 @@ def create_dashboard(data: pd.DataFrame, metrics):
     def display_content(btn_type, btn_carte, btn_region, btn_departement,btn_restaurant, metrics):
         ctx = dash.callback_context
         if not ctx.triggered:
-            return html.Div("Sélectionnez un graphique à afficher.", style={"textAlign": "center", "padding": "50px", "fontSize": "18px", "color": "#6c757d"})
+            return html.Div("SÃ©lectionnez un graphique Ã  afficher.", style={"textAlign": "center", "padding": "50px", "fontSize": "18px", "color": "#6c757d"})
 
         button_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
@@ -85,7 +86,7 @@ def create_dashboard(data: pd.DataFrame, metrics):
                     metrics["restaurants_par_type"],
                     names='Type',
                     values='Count',
-                    title="Répartition des restaurants par type",
+                    title="RÃ©partition des restaurants par type",
                     template="seaborn",
                 ).update_traces(
                     textinfo='percent+label'
@@ -97,10 +98,10 @@ def create_dashboard(data: pd.DataFrame, metrics):
                 figure=px.choropleth(
                     metrics["restaurants_par_departement"],
                     geojson=geojson_data,
-                    locations="Département",
+                    locations="DÃ©partement",
                     featureidkey="properties.nom",
                     color="Count",
-                    title="Nombre de restaurants par département",
+                    title="Nombre de restaurants par dÃ©partement",
                 ).update_geos(
                     visible=False,
                     fitbounds="locations",
@@ -114,9 +115,9 @@ def create_dashboard(data: pd.DataFrame, metrics):
             return dcc.Graph(
                 figure=px.bar(
                     metrics["restaurants_par_region"],
-                    x='Région',
+                    x='RÃ©gion',
                     y='Count',
-                    title="Nombre de restaurants par région",
+                    title="Nombre de restaurants par rÃ©gion",
                     text="Count"
                 ).update_traces(
                     textposition='auto',
@@ -125,14 +126,14 @@ def create_dashboard(data: pd.DataFrame, metrics):
 
         elif button_id == "btn-departement":
         
-            departements = list({item["Département"] for item in metrics["restaurants_par_departement"]})
+            departements = list({item["DÃ©partement"] for item in metrics["restaurants_par_departement"]})
             departements.sort()  
 
             dropdown = dcc.Dropdown(
                 id="departement-dropdown",
                 options=[{"label": departement, "value": departement} for departement in departements],
                 value=departements[0] if departements else None,
-                placeholder="Sélectionnez un département",
+                placeholder="SÃ©lectionnez un dÃ©partement",
                 style={"width": "50%", "margin": "0 auto", "padding": "10px"},
             )
             return html.Div(
@@ -145,14 +146,14 @@ def create_dashboard(data: pd.DataFrame, metrics):
         elif button_id == "btn-restaurant":
         
 
-            departements = list({item["Département"] for item in metrics["restaurants_par_departement"]})
+            departements = list({item["DÃ©partement"] for item in metrics["restaurants_par_departement"]})
             departements.sort()  
 
             dropdown1 = dcc.Dropdown(
                 id="restaurant-dropdown1",
                 options=[{"label": departement, "value": departement} for departement in departements],
                 value=departements[0] if departements else None,  
-                placeholder="Sélectionnez un département",
+                placeholder="SÃ©lectionnez un dÃ©partement",
                 style={"width": "50%", "margin": "0 auto", "padding": "10px"},
             )
 
@@ -160,7 +161,7 @@ def create_dashboard(data: pd.DataFrame, metrics):
                 id="restaurant-dropdown2",
                 options=[],  
                 value=None,  
-                placeholder="Sélectionnez un type de restaurant",
+                placeholder="SÃ©lectionnez un type de restaurant",
                 style={"width": "50%", "margin": "0 auto", "padding": "10px"},
             )
 
@@ -168,7 +169,7 @@ def create_dashboard(data: pd.DataFrame, metrics):
                 id="restaurant-dropdown3",
                 options=[],  
                 value=None, 
-                placeholder="Sélectionnez un restaurant",
+                placeholder="SÃ©lectionnez un restaurant",
                 style={"width": "50%", "margin": "0 auto", "padding": "10px"},
             )
 
@@ -200,19 +201,19 @@ def create_dashboard(data: pd.DataFrame, metrics):
 
     def update_treemap(selected_departement, metrics):
         if not selected_departement:
-            return px.treemap(title="Veuillez sélectionner un département")
+            return px.treemap(title="Veuillez sÃ©lectionner un dÃ©partement")
 
         filtered_data = [item for item in metrics["restaurants_par_departement"] 
-                        if item['Département'] == selected_departement]
+                        if item['DÃ©partement'] == selected_departement]
 
         if not filtered_data:
-            return px.treemap(title=f"Aucun restaurant trouvé pour {selected_departement}")
+            return px.treemap(title=f"Aucun restaurant trouvÃ© pour {selected_departement}")
 
         fig = px.treemap(
             filtered_data,
-            path=['Département', 'Type'],
+            path=['DÃ©partement', 'Type'],
             values='Count',
-            title=f"Répartition des restaurants par type dans {selected_departement}"
+            title=f"RÃ©partition des restaurants par type dans {selected_departement}"
         )
         
         fig.update_layout(
@@ -234,7 +235,7 @@ def create_dashboard(data: pd.DataFrame, metrics):
 
         filtered_data = [
             item for item in metrics["type_departement"]
-            if item["Département"] == departement
+            if item["DÃ©partement"] == departement
         ]
 
         types = []
@@ -256,7 +257,7 @@ def create_dashboard(data: pd.DataFrame, metrics):
 
         filtered_data = [
             item for item in metrics["nom_type"]
-            if item["Type"] == selected_type and item["Département"] == selected_departement
+            if item["Type"] == selected_type and item["DÃ©partement"] == selected_departement
         ]
 
         noms = []

@@ -1,7 +1,7 @@
 from config import CONFIG
 from src.utils.get_data import get_data
 from src.utils.clean_data import clean_data, save_cleaned_data
-from src.utils.prepare_metrics import prepare_metrics 
+from src.utils.prepare_metrics import prepare_metrics
 from src.utils.dashboard import create_dashboard 
 
 
