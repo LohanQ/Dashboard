@@ -7,7 +7,6 @@ import os
 def prepare_metrics(data: pd.DataFrame) -> dict:
     """
     Prépare les métriques nécessaires pour le tableau de bord avec des données de restaurants.
-
     :param data: DataFrame brut ou nettoyé contenant les données des restaurants.
     :return: Dictionnaire contenant les métriques pré-calculées.
     """

@@ -9,13 +9,15 @@ import dash
 import dash_bootstrap_components as dbc
 import webbrowser
 
-from src.components.header import create_header
-from src.components.footer import create_footer
-from src.components.boutons import create_buttons
+from src.components import create_buttons, create_footer, create_header
 
 def create_dashboard(data: pd.DataFrame, metrics):
     """
-    Crée un tableau de bord interactif avec Dash avec des optimisations pour le changement de graphes.
+    Crée un tableau de bord Dash avec des graphiques.
+    
+    :param data: Données nettoyées utilisées pour générer les graphiques.
+    :param metrics: Les métriques calculées à partir des données utilisées dans les graphiques.
+    :return: L'application Dash avec l'interface utilisateur et les callbacks configurés.
     """
 
     with open('data/departements.geojson', 'r', encoding='utf-8') as f:
@@ -74,6 +76,12 @@ def create_dashboard(data: pd.DataFrame, metrics):
         State("metrics-store", "data")
     )
     def display_content(btn_type, btn_carte, btn_region, btn_departement,btn_restaurant, metrics):
+        """
+        Met à jour le contenu affiché en fonction du bouton cliqué.
+        :param btn_type, btn_carte, btn_region, btn_departement,btn_restaurant: Le bouton séléctionné.
+        :param metrics: Les métriques qui contiennent les données nécessaires pour afficher les graphiques.
+        :return: Un graphique correspondant au bouton cliqué.
+        """
         ctx = dash.callback_context
         if not ctx.triggered:
             return html.Div("Sélectionnez un graphique à afficher.", style={"textAlign": "center", "padding": "50px", "fontSize": "18px", "color": "#6c757d"})
@@ -200,6 +208,12 @@ def create_dashboard(data: pd.DataFrame, metrics):
     )
 
     def update_treemap(selected_departement, metrics):
+        """
+        Met à jour le graphique Treemap.
+        :param selected_departement: Le département sélectionné.
+        :param metrics: Les métriques utilisées pour filtrer et générer les données.
+        :return: Un graphique Treemap.
+        """
         if not selected_departement:
             return px.treemap(title="Veuillez sélectionner un département")
 
@@ -229,6 +243,12 @@ def create_dashboard(data: pd.DataFrame, metrics):
     )
 
     def update_type_dropdown(departement, metrics):
+        """
+        Met à jour le dropdown .
+        :param departement: Le département sélectionné.
+        :param metrics: Les métriques utilisées pour filtrer les types de restaurants.
+        :return: Les options de type de restaurant disponibles pour le département sélectionné.
+        """
         if not departement:
             return "aucun type de restaurant disponible";
         
@@ -252,6 +272,13 @@ def create_dashboard(data: pd.DataFrame, metrics):
     State("metrics-store", "data")
 )
     def update_restaurant_dropdown(selected_type, selected_departement, metrics):
+        """
+        Met à jour les options du dropdown des restaurants en fonction du type et du département sélectionnés.
+        :param selected_type: Le type de restaurant sélectionné.
+        :param selected_departement: Le département sélectionné.
+        :param metrics: Les métriques utilisées pour filtrer les restaurants.
+        :return: Les options de restaurants disponibles en fonction des filtres.
+        """
         if not selected_type or not selected_departement:
             return [] 
 
@@ -277,6 +304,13 @@ def create_dashboard(data: pd.DataFrame, metrics):
      Input("restaurant-dropdown1", "value")]
     )
     def search_restaurant_on_internet(selected_restaurant,selected_type, selected_departement):
+        """
+        Met à jour l'URL de recherche Google et rend visible le bouton de recherche si un restaurant, type et département sont sélectionnés.
+        :param selected_restaurant: Le restaurant sélectionné.
+        :param selected_type: Le type de restaurant sélectionné.
+        :param selected_departement: Le département sélectionné.
+        :return: L'URL de recherche Google et le bouton de recherche.
+        """
         
         if selected_restaurant and selected_departement and selected_type:
             # Effectue une recherche sur Google 
@@ -291,12 +325,20 @@ def create_dashboard(data: pd.DataFrame, metrics):
         [Input("restaurant-dropdown3", "value")]
     )
     def update_link_text(selected_restaurant):
+        """
+        Met à jour le texte du lien pour rechercher un restaurant sélectionné sur Google.
+        :param selected_restaurant: Le restaurant sélectionné.
+        :return: Le texte du lien pour effectuer la recherche.
+        """
         if selected_restaurant:
             return f"Chercher {selected_restaurant} sur Google"  
         return "" 
 
 
     def open_browser():
+        """
+        Ouvre automatiquement l'application Dash dans un navigateur web.
+        """
         webbrowser.open_new("http://127.0.0.1:8050/")
 
     Timer(1, open_browser).start()

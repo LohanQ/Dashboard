@@ -6,9 +6,7 @@ import numpy as np
 def get_data(file_name: str) -> pd.DataFrame:
     """
     Charge un fichier CSV depuis le répertoire spécifié avec possibilité de gestion par morceaux (chunks).
-
     :param file_name: Nom du fichier à charger (ex: 'rawdata.csv').
-    :param chunksize: Taille des morceaux à charger (None pour charger tout le fichier d'un coup).
     :return: DataFrame pandas contenant les données chargées ou un DataFrame combiné si chunksize est utilisé.
     """
     #raw_data_path = os.path.join(r"C:\\Users\\lohan\\Downloads", file_name)
@@ -17,6 +15,12 @@ def get_data(file_name: str) -> pd.DataFrame:
     try:
             # Lis le fichier complet
             data = pd.read_csv(url, on_bad_lines='skip', sep=";",encoding='utf-8')
+            script_dir = os.path.dirname(__file__)
+            dashboard_dir = os.path.abspath(os.path.join(script_dir, "..", ".."))
+            dashboard_dir = os.path.join(dashboard_dir, "data")
+            raw_data_path = os.path.join(dashboard_dir, file_name)
+            data.to_csv(raw_data_path, index=False, sep=";")
+
     except pd.errors.ParserError as e:
         print(f"Erreur lors de la lecture du fichier CSV: {e}")
         raise

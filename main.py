@@ -1,13 +1,12 @@
 from config import CONFIG
-from src.utils.get_data import get_data
-from src.utils.clean_data import clean_data, save_cleaned_data
-from src.utils.prepare_metrics import prepare_metrics
-from src.utils.dashboard import create_dashboard 
-
+from src.utils import clean_data, save_cleaned_data, prepare_metrics, get_data, create_dashboard
 
 
 
 def main():
+    """
+    Fonction principal gérant le déroulé du code
+    """
     raw_data = get_data("osm-france-food-service.csv")
     print("Données brutes chargées :")
     print(raw_data.head())

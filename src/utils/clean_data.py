@@ -4,7 +4,6 @@ import os
 def clean_data(data: pd.DataFrame) -> pd.DataFrame:
     """
     Nettoie et prépare les données relatives aux restaurants.
-
     :param data: DataFrame brut contenant les informations sur les restaurants.
     :return: DataFrame nettoyé.
     """
@@ -42,6 +41,7 @@ def save_cleaned_data(data: pd.DataFrame, file_name: str):
     """
     script_dir = os.path.dirname(__file__)
     dashboard_dir = os.path.abspath(os.path.join(script_dir, "..", ".."))
+    dashboard_dir = os.path.join(dashboard_dir, "data")
     cleaned_data_path = os.path.join(dashboard_dir, file_name)
     data.to_csv(cleaned_data_path, index=False, sep=";")
     print(f"Fichier sauvegardé : {cleaned_data_path}")
