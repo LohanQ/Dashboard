@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 
-def get_local_data(file_name: str) -> pd.DataFrame:
+def get_data(file_name: str) -> pd.DataFrame:
     """
     Charge un fichier CSV depuis le répertoire spécifié avec possibilité de gestion par morceaux (chunks).
 
@@ -16,7 +16,7 @@ def get_local_data(file_name: str) -> pd.DataFrame:
 
     try:
             # Lis le fichier complet
-            data = pd.read_csv(url, on_bad_lines='skip', sep=";")
+            data = pd.read_csv(url, on_bad_lines='skip', sep=";",encoding='utf-8')
     except pd.errors.ParserError as e:
         print(f"Erreur lors de la lecture du fichier CSV: {e}")
         raise
