@@ -10,3 +10,5 @@ __pycache__
 /.vs/
 /cleaneddata.csv
 /env/
+/data/cleaneddata.csv
+/data/osm-france-food-service.csv
