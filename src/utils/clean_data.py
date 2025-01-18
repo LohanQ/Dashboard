@@ -8,7 +8,7 @@ def clean_data(data: pd.DataFrame) -> pd.DataFrame:
     :return: DataFrame nettoyé.
     """
     # Nettoie les noms de colonnes
-    data.columns = data.columns.str.strip().str.replace('\s+', ' ', regex=True)
+    data.columns = data.columns.str.strip().str.replace('\\s+', ' ', regex=True)
     print("Colonnes normalisées :", data.columns)
 
     if 'Nom' not in data.columns or 'Commune' not in data.columns or 'Région' not in data.columns:
@@ -32,7 +32,7 @@ def clean_data(data: pd.DataFrame) -> pd.DataFrame:
 
 
 
-def save_cleaned_data(data: pd.DataFrame, file_name: str):
+def save_cleaned_data(data: pd.DataFrame, file_name: str)-> None:
     """
     Sauvegarde le DataFrame nettoyé dans un fichier CSV.
 
@@ -41,7 +41,7 @@ def save_cleaned_data(data: pd.DataFrame, file_name: str):
     """
     script_dir = os.path.dirname(__file__)
     dashboard_dir = os.path.abspath(os.path.join(script_dir, "..", ".."))
-    dashboard_dir = os.path.join(dashboard_dir, "data")
+    dashboard_dir = os.path.join(dashboard_dir, "data","cleaned")
     cleaned_data_path = os.path.join(dashboard_dir, file_name)
     data.to_csv(cleaned_data_path, index=False, sep=";")
     print(f"Fichier sauvegardé : {cleaned_data_path}")

@@ -1,9 +1,8 @@
-from config import CONFIG
 from src.utils import clean_data, save_cleaned_data, prepare_metrics, get_data, create_dashboard
 
 
 
-def main():
+def main()->None:
     """
     Fonction principal gérant le déroulé du code
     """

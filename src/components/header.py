@@ -2,9 +2,9 @@
 import dash_bootstrap_components as dbc
 from dash import html
 
-def create_header():
+def create_header()-> dbc.Row:
     """
-    Crée l'entête du tableau de bord.
+    CrÃ©e l'entÃªte du tableau de bord.
     :return: Un objet Row contenant un Header.
     """
     return dbc.Row(

@@ -1,6 +1,7 @@
 import dash_bootstrap_components as dbc
+from typing import Dict
 
-def create_buttons(style_button):
+def create_buttons(style_button: Dict[str, str])-> dbc.Row:
     """
     Crée les boutons utilisés pour le tableau de bord.
     :param style_button: Style à appliquer aux boutons créés.

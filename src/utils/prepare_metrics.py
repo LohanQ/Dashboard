@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 
 import pandas as pd
-import os
+
 
 
 def prepare_metrics(data: pd.DataFrame) -> dict:

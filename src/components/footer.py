@@ -1,7 +1,7 @@
 import dash_bootstrap_components as dbc
 from dash import html
 
-def create_footer():
+def create_footer()-> dbc.Row:
     """
     Crée le pied de page du tableau de bord.
     :return: Un objet Row contenant un Footer.

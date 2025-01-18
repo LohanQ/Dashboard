@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-import numpy as np
 
 
 def get_data(file_name: str) -> pd.DataFrame:
@@ -17,7 +16,7 @@ def get_data(file_name: str) -> pd.DataFrame:
             data = pd.read_csv(url, on_bad_lines='skip', sep=";",encoding='utf-8')
             script_dir = os.path.dirname(__file__)
             dashboard_dir = os.path.abspath(os.path.join(script_dir, "..", ".."))
-            dashboard_dir = os.path.join(dashboard_dir, "data")
+            dashboard_dir = os.path.join(dashboard_dir, "data","raw")
             raw_data_path = os.path.join(dashboard_dir, file_name)
             data.to_csv(raw_data_path, index=False, sep=";")
 

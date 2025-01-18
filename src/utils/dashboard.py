@@ -1,17 +1,18 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*- 
 
 from dash import dcc, html, Input, Output, State
 from threading import Timer
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import json
 import dash
 import dash_bootstrap_components as dbc
 import webbrowser
+from src.components import create_buttons, create_footer, create_header 
+from typing import List, Dict, Tuple, Union
 
-from src.components import create_buttons, create_footer, create_header
-
-def create_dashboard(data: pd.DataFrame, metrics):
+def create_dashboard(data: pd.DataFrame,metrics: Dict[str, pd.DataFrame]) -> dash.Dash:
     """
     Crée un tableau de bord Dash avec des graphiques.
     
@@ -33,38 +34,23 @@ def create_dashboard(data: pd.DataFrame, metrics):
         "transition": "transform 0.3s ease-in-out"
     }
 
-    style_header = {
-        "font-family": "Poppins, sans-serif", 
-        "font-weight": "600", 
-    }
 
     style_button = {
         "transition": "all 0.3s ease-in-out",
     }
 
-
     app.layout = dbc.Container(
-    fluid=True,
-    children=[
-        # Stockage des métriques
-        dcc.Store(id="metrics-store", data=metrics), 
-
-        # Appel du header
-        create_header(),  # Appel du composant header
-
-        # Appel des boutons
-        create_buttons(style_button),  # Appel de la fonction qui retourne les boutons
-
-        # Contenu dynamique qui changera en fonction des clics
-        dbc.Row(
-            dbc.Col(html.Div(id="content", className="p-4", style=style_card), width=12)
-        ),
-
-        # Appel du footer
-        create_footer(),  # Appel du composant footer
-    ]
-)
-
+        fluid=True,
+        children=[
+            dcc.Store(id="metrics-store", data=metrics), 
+            create_header(),  
+            create_buttons(style_button),  
+            dbc.Row(
+                dbc.Col(html.Div(id="content", className="p-4", style=style_card), width=12)
+            ),
+            create_footer(),  
+        ]
+    )
 
     @app.callback(
         Output("content", "children"),
@@ -75,10 +61,10 @@ def create_dashboard(data: pd.DataFrame, metrics):
          Input("btn-restaurant", "n_clicks")],
         State("metrics-store", "data")
     )
-    def display_content(btn_type, btn_carte, btn_region, btn_departement,btn_restaurant, metrics):
+    def display_content(btn_type: int, btn_carte: int, btn_region: int, btn_departement: int, btn_restaurant: int, metrics: Dict[str, pd.DataFrame]) -> Union[html.Div, go.Figure, None]:
         """
         Met à jour le contenu affiché en fonction du bouton cliqué.
-        :param btn_type, btn_carte, btn_region, btn_departement,btn_restaurant: Le bouton séléctionné.
+        :param btn_type, btn_carte, btn_region, btn_departement, btn_restaurant: Le bouton sélectionné.
         :param metrics: Les métriques qui contiennent les données nécessaires pour afficher les graphiques.
         :return: Un graphique correspondant au bouton cliqué.
         """
@@ -149,11 +135,9 @@ def create_dashboard(data: pd.DataFrame, metrics):
                     dropdown,
                     dcc.Graph(id="treemap-dynamic"),
                 ]
-        )
+            )
 
         elif button_id == "btn-restaurant":
-        
-
             departements = list({item["Département"] for item in metrics["restaurants_par_departement"]})
             departements.sort()  
 
@@ -182,12 +166,12 @@ def create_dashboard(data: pd.DataFrame, metrics):
             )
 
             recherche = dbc.Button(
-            "Rechercher sur Google",
-            id="restaurant-recherche-boutton",
-            color="primary",
-            style={"marginTop": "20px", "display": "none", "marginLeft": "auto", "marginRight": "auto", "textAlign": "center"}, 
-            href="",  
-            target="_blank",  
+                "Rechercher sur Google",
+                id="restaurant-recherche-boutton",
+                color="primary",
+                style={"marginTop": "20px", "display": "none", "marginLeft": "auto", "marginRight": "auto", "textAlign": "center"}, 
+                href="",  
+                target="_blank",  
             )
 
             return html.Div(
@@ -196,18 +180,16 @@ def create_dashboard(data: pd.DataFrame, metrics):
                     dropdown2,
                     dropdown3,
                     html.Div([recherche], style={"textAlign": "center", "marginTop": "20px"}),
-                    ])
-          
-
-
+                ]
+            )
+        return None
 
     @app.callback(
         Output("treemap-dynamic", "figure"),
         [Input("departement-dropdown", "value")],
         State("metrics-store", "data"),
     )
-
-    def update_treemap(selected_departement, metrics):
+    def update_treemap(selected_departement: str, metrics: Dict[str, pd.DataFrame]) -> go.Figure:
         """
         Met à jour le graphique Treemap.
         :param selected_departement: Le département sélectionné.
@@ -241,18 +223,16 @@ def create_dashboard(data: pd.DataFrame, metrics):
         [Input("restaurant-dropdown1", "value")],
         State("metrics-store", "data")
     )
-
-    def update_type_dropdown(departement, metrics):
+    def update_type_dropdown(departement: str, metrics: Dict[str, pd.DataFrame]) -> List[Dict[str, str]]:
         """
-        Met à jour le dropdown .
+        Met à jour le dropdown des types de restaurants.
         :param departement: Le département sélectionné.
         :param metrics: Les métriques utilisées pour filtrer les types de restaurants.
         :return: Les options de type de restaurant disponibles pour le département sélectionné.
         """
         if not departement:
-            return "aucun type de restaurant disponible";
+            return [{"label": "Aucun", "value": "aucun"}]
         
-
         filtered_data = [
             item for item in metrics["type_departement"]
             if item["Département"] == departement
@@ -264,14 +244,12 @@ def create_dashboard(data: pd.DataFrame, metrics):
 
         return [{"label": t, "value": t} for t in sorted(set(types))] 
 
-
-
     @app.callback(
-    Output("restaurant-dropdown3", "options"),
-    [Input("restaurant-dropdown2", "value"), Input("restaurant-dropdown1", "value")],
-    State("metrics-store", "data")
-)
-    def update_restaurant_dropdown(selected_type, selected_departement, metrics):
+        Output("restaurant-dropdown3", "options"),
+        [Input("restaurant-dropdown2", "value"), Input("restaurant-dropdown1", "value")],
+        State("metrics-store", "data")
+    )
+    def update_restaurant_dropdown(selected_type: str, selected_departement: str, metrics: Dict[str, pd.DataFrame]) -> List[Dict[str, str]]:
         """
         Met à jour les options du dropdown des restaurants en fonction du type et du département sélectionnés.
         :param selected_type: Le type de restaurant sélectionné.
@@ -294,16 +272,16 @@ def create_dashboard(data: pd.DataFrame, metrics):
 
         return [{"label": t, "value": t} for t in sorted(set(n for n in noms if n))]
 
-
-
     @app.callback(
-    [Output("restaurant-recherche-boutton", "href"),  
-     Output("restaurant-recherche-boutton", "style")],  
-    [Input("restaurant-dropdown3", "value"),
-     Input("restaurant-dropdown2", "value"),
-     Input("restaurant-dropdown1", "value")]
+        [Output("restaurant-recherche-boutton", "href"),  
+         Output("restaurant-recherche-boutton", "style")],  
+        [Input("restaurant-dropdown3", "value"),
+         Input("restaurant-dropdown2", "value"),
+         Input("restaurant-dropdown1", "value")]
     )
-    def search_restaurant_on_internet(selected_restaurant,selected_type, selected_departement):
+    def search_restaurant_on_internet(
+        selected_restaurant: str, selected_type: str, selected_departement: str
+    ) -> Tuple[str, Dict[str, str]]:
         """
         Met à jour l'URL de recherche Google et rend visible le bouton de recherche si un restaurant, type et département sont sélectionnés.
         :param selected_restaurant: Le restaurant sélectionné.
@@ -313,18 +291,15 @@ def create_dashboard(data: pd.DataFrame, metrics):
         """
         
         if selected_restaurant and selected_departement and selected_type:
-            # Effectue une recherche sur Google 
             search_url = f"https://www.google.com/search?q={selected_restaurant}+{selected_type}+{selected_departement}"
             return search_url, {"display": "inline-block"}  
         return "", {"display": "none"}  
-
-
 
     @app.callback(
         Output("restaurant-link", "children"),  
         [Input("restaurant-dropdown3", "value")]
     )
-    def update_link_text(selected_restaurant):
+    def update_link_text(selected_restaurant: str) -> str:
         """
         Met à jour le texte du lien pour rechercher un restaurant sélectionné sur Google.
         :param selected_restaurant: Le restaurant sélectionné.
@@ -332,10 +307,10 @@ def create_dashboard(data: pd.DataFrame, metrics):
         """
         if selected_restaurant:
             return f"Chercher {selected_restaurant} sur Google"  
-        return "" 
+        return ""  
 
 
-    def open_browser():
+    def open_browser() -> None:
         """
         Ouvre automatiquement l'application Dash dans un navigateur web.
         """
