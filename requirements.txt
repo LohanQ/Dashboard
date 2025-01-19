@@ -1,6 +1,6 @@
+setuptools>=65.0.0
 dash==2.11.1
 dash-bootstrap-components==1.4.0
-pandas==2.0.3
-numpy==1.24.4
+pandas==2.2.3
+numpy==2.1.0
 plotly==5.16.0
-setuptools>=49.0.0
