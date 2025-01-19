@@ -12,7 +12,7 @@ Liste des commandes à exécuter dans l'ordre pour télécharger et faire foncti
 1. **Cloner le dépôt** :
    Commandes : 
    git clone https://github.com/LohanQ/Dashboard.git
-   cd votre-repo
+   cd Dashboard
 
 2. **Installer les dépendances** :
    Utilisez un environnement virtuel et installez les packages nécessaires :
